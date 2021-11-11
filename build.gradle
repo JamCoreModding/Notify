@@ -32,10 +32,6 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
-
-    maven {
-        url = uri("https://storage.googleapis.com/devan-maven/")
-    }
 }
 //endregion
 
@@ -46,7 +42,6 @@ dependencies {
     modImplementation('net.fabricmc:fabric-loader:' + project.property('loader_version'))
 
     modImplementation('net.fabricmc.fabric-api:fabric-api:' + project.property('fabric_api_version'))
-    include(modImplementation('com.github.Jamalam360:LibJam:' + project.property('libjam_version')))
 
     modApi('com.terraformersmc:modmenu:' + project.property('mod_menu_version'))
 }

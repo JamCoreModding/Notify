@@ -1,0 +1,129 @@
+//file:noinspection GroovyUnusedAssignment
+
+//region Plugins
+plugins {
+    id 'fabric-loom' version '0.9.+'
+    id 'io.github.juuxel.loom-quiltflower' version '1.3.0'
+    id 'maven-publish'
+    id 'org.cadixdev.licenser' version '0.6.0'
+}
+//endregion
+
+//region General Configuration
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+//endregion
+
+//region Minecraft Configuration
+minecraft {
+}
+//endregion
+
+//region Repositories
+repositories {
+    maven {
+        url 'https://maven.terraformersmc.com/releases'
+    }
+
+    maven {
+        url 'https://jitpack.io'
+    }
+
+    maven {
+        url = uri("https://storage.googleapis.com/devan-maven/")
+    }
+}
+//endregion
+
+//region Dependencies
+dependencies {
+    minecraft('com.mojang:minecraft:' + project.property('minecraft_version'))
+    mappings('net.fabricmc:yarn:' + project.property('yarn_mappings') + ':v2')
+    modImplementation('net.fabricmc:fabric-loader:' + project.property('loader_version'))
+
+    modImplementation('net.fabricmc.fabric-api:fabric-api:' + project.property('fabric_api_version'))
+    include(modImplementation('com.github.Jamalam360:LibJam:' + project.property('libjam_version')))
+
+    modApi('com.terraformersmc:modmenu:' + project.property('mod_menu_version'))
+}
+//endregion
+
+//region Process Resources Configuration
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+//endregion
+
+//region JavaCompile Task Extension
+tasks.withType(JavaCompile) {
+    licenseFormat
+    options.encoding = 'UTF-8'
+}
+//endregion
+
+//region Build Task Extension
+tasks.named('build') {
+    dependsOn tasks.updateLicenses
+}
+//endregion
+
+//region Template Task
+//TODO: Delete this task:
+tasks.register('template') {
+    doFirst {
+        def gradleProperties = new File('gradle.properties')
+        def readme = new File('README.md')
+        def mainClass = new File('src/main/java/io/github/jamalam360/TemplateModInit.java')
+        def modJson = new File('src/main/resources/fabric.mod.json')
+        def mixinJson = new File('src/main/resources/templatemod.mixins.json')
+		def assetsDirectory = new File('src/main/resources/assets/templatemod')
+
+        ant.input(message: 'Enter Mod ID: ', addProperty: 'modId')
+        ant.input(message: 'Enter Mod Name: ', addProperty: 'modName')
+        ant.input(message: 'Enter Mod Description: ', addProperty: 'modDescription')
+        ant.input(message: 'Enter GitHub URL: ', addProperty: 'githubUrl')
+
+        def modId = ant.modId
+        def modName = ant.modName
+        def modDescription = ant.modDescription
+        def githubUrl = ant.githubUrl
+        def mainClassName = modName + 'ModInit'
+
+        def resources = 'src/main/resources/'
+        def java = 'src/main/java/io/github/jamalam360/' + modId + '/'
+
+        gradleProperties.text = gradleProperties.text.replace('%id%', modId)
+        readme.text = readme.text.replace('%description%', modDescription)
+        mainClass.text = mainClass.text.replace('%id%', modId).replace('%name%', modName).replace('%mainclass%', mainClassName)
+        modJson.text = modJson.text.replace('%id%', modId).replace('%name%', modName).replace('%description%', modDescription).replace('%github%', githubUrl)
+
+        //noinspection GroovyAssignabilityCheck
+        mainClass.renameTo(java + mainClassName + '.java')
+        //noinspection GroovyAssignabilityCheck
+		mixinJson.renameTo(resources + modId + '.mixins.json')
+        //noinspection GroovyAssignabilityCheck
+        assetsDirectory.renameTo(resources + 'assets/' + modId)
+    }
+}
+//endregion
+
+//region Sources Jar
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+//endregion
+
+//region Jar Configuration
+jar {
+    from 'LICENSE'
+}
+//endregion

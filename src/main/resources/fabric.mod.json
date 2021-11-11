@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "%id%",
+  "version": "${version}",
+  "name": "%name%",
+  "description": "%description%",
+  "authors": [
+    "Jamalam360 - Owner, Developer"
+  ],
+  "contributors": [],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/",
+    "issues": "%github%/issues",
+    "sources": "%github%"
+  },
+  "license": "MIT",
+  "icon": "assets/%id%/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.jamalam360.%name%ModInit"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "%id%.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*"
+  }
+}

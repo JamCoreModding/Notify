@@ -26,6 +26,7 @@ package io.github.jamalam360.notify;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
@@ -48,6 +49,10 @@ public class NotifyVersionChecker {
         return FabricLoader.getInstance().getModContainer(mod.modId()).get().getMetadata().getVersion();
     }
 
+    public static Version getMinecraftVersion() {
+        return FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
+    }
+
     public static VersionComparisonResult checkVersion(NotifyMod mod) {
         Version latestVersion = getLatestVersion(mod);
 
@@ -64,20 +69,42 @@ public class NotifyVersionChecker {
         try {
             URL versionsUrl = new URL(mod.versionsUrl());
             reader = GSON.newJsonReader(new InputStreamReader(versionsUrl.openStream()));
-            reader.beginObject();
 
+            reader.beginObject();
             boolean notFound = true;
+            Version finalResult = null;
 
             while (reader.hasNext() && notFound) {
                 if (reader.nextName().equals(mod.modId())) {
+                    reader.beginObject();
+
+                    Version wildcardVersion = null;
+                    Version specificVersion = null;
+                    Version minecraftVersion = getMinecraftVersion();
+
+                    while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
+                        String name = reader.nextName();
+                        String str = reader.nextString();
+
+                        if (name.equals("*")) {
+                            wildcardVersion = Version.parse(str);
+                        } else {
+                            Version vers = Version.parse(name);
+                            if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersion)) {
+                                specificVersion = Version.parse(str);
+                            }
+                        }
+                    }
+
+                    finalResult = specificVersion == null ? wildcardVersion : specificVersion;
                     notFound = false;
                 }
             }
 
-            if (notFound) {
+            if (notFound || finalResult == null) {
                 NotifyModInit.LOGGER.log(Level.WARN, "Could not find version for mod " + mod.modId() + ", but a version JSON URL was supplied");
             } else {
-                return Version.parse(reader.nextString());
+                return finalResult;
             }
 
         } catch (MalformedURLException e) {

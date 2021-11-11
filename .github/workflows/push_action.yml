@@ -19,6 +19,9 @@ jobs:
       - name: Check If Initial Commit
         if: ${{ github.event.commits[0].message == 'Initial commit' }}
         run: echo "run=false" >> $GITHUB_ENV
+      - name: Check For --no-actions Flag
+        if: ${{ contains(github.event.commits[0].message, '--no-actions') }}
+        run: echo "run=false" >> $GITHUB_ENV
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Setup JDK ${{ matrix.java }}

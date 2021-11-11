@@ -1,5 +1,7 @@
 Unobtrusively notify users when mod updates are available
 
+Notify doesn't spam messages in the Minecraft chat, it simply adds a small button to the main menu that can tell you what mods need updating. It also logs information to the console for server owners.
+
 ## Mod Authors
 
 Adding support for Notify is a trivial process.

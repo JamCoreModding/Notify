@@ -1,30 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "%id%",
+  "id": "notify",
   "version": "${version}",
-  "name": "%name%",
-  "description": "%description%",
+  "name": "Notify",
+  "description": "Unobtrusively notify users when mod updates are available",
   "authors": [
     "Jamalam360 - Owner, Developer"
   ],
   "contributors": [],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/",
-    "issues": "%github%/issues",
-    "sources": "%github%"
+    "issues": "https://github.com/JamCoreModding/Notify/issues",
+    "sources": "https://github.com/JamCoreModding/Notify"
   },
   "license": "MIT",
-  "icon": "assets/%id%/icon.png",
+  "icon": "assets/notify/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.jamalam360.%name%ModInit"
-    ],
-    "client": [],
-    "server": []
+      "io.github.jamalam360.notify.NotifyModInit"
+    ]
   },
   "mixins": [
-    "%id%.mixins.json"
+    "notify.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11.3",

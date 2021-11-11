@@ -1,1 +1,1 @@
-%description%
+Unobtrusively notify users when mod updates are available

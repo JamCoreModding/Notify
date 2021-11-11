@@ -25,7 +25,14 @@ The JSON file you link for Notify to use should follow this format:
 ```json
 {
     "your_first_mods_id": {
-        "1.16.5": "1.0.5," # The latest version for 1.16.5
+        "1.16.5": "1.0.5", # The latest version for 1.16.5
+        "*": "1.0.6" # The version to use if the specific Minecraft version is not specified
+    },
+    "your_second_mods_id": {
+        "*": "0.0.1"
     }
 }
 ```
+
+If you do not provide a version for a specific Minecraft version, Notify will use the version specified using the wildcard operator (`*`).
+If you haven't specified a version or a wildcard version, or if there is a different failure, Notify logs the error in the console but does not obstruct the user.

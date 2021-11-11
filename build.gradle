@@ -42,7 +42,6 @@ dependencies {
     modImplementation('net.fabricmc:fabric-loader:' + project.property('loader_version'))
 
     modImplementation('net.fabricmc.fabric-api:fabric-api:' + project.property('fabric_api_version'))
-
     modApi('com.terraformersmc:modmenu:' + project.property('mod_menu_version'))
 }
 //endregion
@@ -67,46 +66,6 @@ tasks.withType(JavaCompile) {
 //region Build Task Extension
 tasks.named('build') {
     dependsOn tasks.updateLicenses
-}
-//endregion
-
-//region Template Task
-//TODO: Delete this task:
-tasks.register('template') {
-    doFirst {
-        def gradleProperties = new File('gradle.properties')
-        def readme = new File('README.md')
-        def mainClass = new File('src/main/java/io/github/jamalam360/TemplateModInit.java')
-        def modJson = new File('src/main/resources/fabric.mod.json')
-        def mixinJson = new File('src/main/resources/templatemod.mixins.json')
-		def assetsDirectory = new File('src/main/resources/assets/templatemod')
-
-        ant.input(message: 'Enter Mod ID: ', addProperty: 'modId')
-        ant.input(message: 'Enter Mod Name: ', addProperty: 'modName')
-        ant.input(message: 'Enter Mod Description: ', addProperty: 'modDescription')
-        ant.input(message: 'Enter GitHub URL: ', addProperty: 'githubUrl')
-
-        def modId = ant.modId
-        def modName = ant.modName
-        def modDescription = ant.modDescription
-        def githubUrl = ant.githubUrl
-        def mainClassName = modName + 'ModInit'
-
-        def resources = 'src/main/resources/'
-        def java = 'src/main/java/io/github/jamalam360/' + modId + '/'
-
-        gradleProperties.text = gradleProperties.text.replace('%id%', modId)
-        readme.text = readme.text.replace('%description%', modDescription)
-        mainClass.text = mainClass.text.replace('%id%', modId).replace('%name%', modName).replace('%mainclass%', mainClassName)
-        modJson.text = modJson.text.replace('%id%', modId).replace('%name%', modName).replace('%description%', modDescription).replace('%github%', githubUrl)
-
-        //noinspection GroovyAssignabilityCheck
-        mainClass.renameTo(java + mainClassName + '.java')
-        //noinspection GroovyAssignabilityCheck
-		mixinJson.renameTo(resources + modId + '.mixins.json')
-        //noinspection GroovyAssignabilityCheck
-        assetsDirectory.renameTo(resources + 'assets/' + modId)
-    }
 }
 //endregion
 

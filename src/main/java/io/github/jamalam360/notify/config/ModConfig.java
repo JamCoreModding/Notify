@@ -22,28 +22,16 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.config;
 
-import net.fabricmc.loader.api.FabricLoader;
-
-import java.util.ArrayList;
-import java.util.List;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
 
 /**
  * @author Jamalam360
  */
-public class NotifyModFetcher {
-    public static List<NotifyMod> getModsWithNotify() {
-        FabricLoader loader = FabricLoader.getInstance();
-        List<NotifyMod> mods = new ArrayList<>();
 
-        loader.getAllMods().forEach(mod -> {
-            if (mod.getMetadata().containsCustomValue("notify_version_url")) {
-                NotifyMod notifyMod = new NotifyMod(mod.getMetadata().getId(), mod.getMetadata().getCustomValue("notify_version_url").getAsString());
-                mods.add(notifyMod);
-            }
-        });
-
-        return mods;
-    }
+@Config(name = "notify")
+public class ModConfig implements ConfigData {
+    public boolean verboseLogging = false;
 }

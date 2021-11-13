@@ -24,26 +24,32 @@
 
 package io.github.jamalam360.notify;
 
+import com.terraformersmc.modmenu.util.mod.Mod;
+import io.github.alkyaly.enumextender.EnumExtender;
+import io.github.jamalam360.notify.config.ModConfig;
+import io.github.jamalam360.notify.resolver.NotifyMod;
+import io.github.jamalam360.notify.resolver.NotifyModFetcher;
+import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.text.LiteralText;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("ConstantConditions")
 public class NotifyModInit implements ModInitializer {
-    public static Logger LOGGER = LogManager.getLogger();
-
-    public static final String MOD_NAME = "Notify";
-
-    public static final Map<NotifyMod, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
+    public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
+    public static Mod.Badge UPDATE_BADGE;
 
     @Override
     public void onInitialize() {
-        LOGGER.log(Level.INFO, "Initializing " + MOD_NAME);
+        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
+
+        NotifyLogger.info(false, "Checking versions...");
 
         List<NotifyMod> notifyMods = NotifyModFetcher.getModsWithNotify();
 
@@ -51,18 +57,48 @@ public class NotifyModInit implements ModInitializer {
             NotifyVersionChecker.VersionComparisonResult result = NotifyVersionChecker.checkVersion(notifyMod);
 
             if (result == NotifyVersionChecker.VersionComparisonResult.OUTDATED) {
-                LOGGER.log(Level.INFO, "Mod " + notifyMod.modId() + " is outdated. The latest version is v" + NotifyVersionChecker.getLatestVersion(notifyMod).getFriendlyString() + ", while you have v" + NotifyVersionChecker.getCurrentVersion(notifyMod));
-            } else {
-                if (FabricLoader.getInstance().isDevelopmentEnvironment() && result == NotifyVersionChecker.VersionComparisonResult.UPDATED) {
-                    LOGGER.log(Level.INFO, "Mod " + notifyMod.modId() + " is up to date. You are only seeing this message for debugging because you are in a development environment.");
+                if (NotifyModInit.getConfig().verboseLogging) {
+                    NotifyLogger.info(
+                            true,
+                            "Mod %s has updates available; the latest version is v%s, while you have v%s (fetched latest version from %s)",
+                            notifyMod.modId(),
+                            NotifyVersionChecker.getLatestVersion(notifyMod).getFriendlyString(),
+                            NotifyVersionChecker.getCurrentVersion(notifyMod),
+                            notifyMod.versionsUrl()
+                    );
+                } else {
+                    NotifyLogger.info(
+                            false,
+                            "Mod %s has updates available; the latest version is v%s, while you have v%s",
+                            notifyMod.modId(),
+                            NotifyVersionChecker.getLatestVersion(notifyMod).getFriendlyString(),
+                            NotifyVersionChecker.getCurrentVersion(notifyMod)
+                    );
                 }
+            } else {
+                NotifyLogger.info(
+                        true,
+                        "Mod %s is updated to the latest version",
+                        notifyMod.modId()
+                );
             }
 
-            MOD_UPDATE_STATUS_MAP.put(notifyMod, result);
+            NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.modId(), result);
         }
 
         Map<String, String> statusMapPlain = new HashMap<>();
-        MOD_UPDATE_STATUS_MAP.forEach((mod, result) -> statusMapPlain.put(mod.modId(), result.name()));
+        NotifyModInit.MOD_UPDATE_STATUS_MAP.forEach((modId, result) -> statusMapPlain.put(modId, result.name()));
         FabricLoader.getInstance().getObjectShare().put("notify:notify_statuses", statusMapPlain);
+
+        UPDATE_BADGE = EnumExtender.addToEnum(Mod.Badge.class, null, "NOTIFY_UPDATE", Map.of(
+                "text", new LiteralText("Update Status"),
+                "outlineColor", 0xFF0000,
+                "fillColor", 0xFF0000,
+                "key", "null"
+        ));
+    }
+
+    public static ModConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }

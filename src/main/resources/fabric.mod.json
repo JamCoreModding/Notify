@@ -19,6 +19,9 @@
   "entrypoints": {
     "main": [
       "io.github.jamalam360.notify.NotifyModInit"
+    ],
+    "modmenu": [
+      "io.github.jamalam360.notify.config.NotifyModMenu"
     ]
   },
   "mixins": [

@@ -32,6 +32,10 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
+
+    maven {
+        url "https://maven.shedaniel.me/"
+    }
 }
 //endregion
 
@@ -42,7 +46,13 @@ dependencies {
     modImplementation('net.fabricmc:fabric-loader:' + project.property('loader_version'))
 
     modImplementation('net.fabricmc.fabric-api:fabric-api:' + project.property('fabric_api_version'))
-    modApi('com.terraformersmc:modmenu:' + project.property('mod_menu_version'))
+    modImplementation('com.terraformersmc:modmenu:' + project.property('mod_menu_version'))
+
+    include(modImplementation('com.github.alkyaly:enum-extender-3000:' + project.property('enum_extender_version')))
+
+    modApi('me.shedaniel.cloth:cloth-config-fabric:' + project.property('cloth_config_version')) {
+        exclude(group: 'net.fabricmc.fabric-api')
+    }
 }
 //endregion
 

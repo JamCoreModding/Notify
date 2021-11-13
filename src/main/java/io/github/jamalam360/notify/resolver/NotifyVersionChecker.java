@@ -22,16 +22,17 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.resolver;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.resolver.NotifyMod;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
-import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -102,23 +103,22 @@ public class NotifyVersionChecker {
             }
 
             if (notFound || finalResult == null) {
-                NotifyModInit.LOGGER.log(Level.WARN, "Could not find version for mod " + mod.modId() + ", but a version JSON URL was supplied");
+                NotifyLogger.warn(false, "\"Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", mod.modId());
             } else {
                 return finalResult;
             }
-
         } catch (MalformedURLException e) {
-            NotifyModInit.LOGGER.log(Level.WARN, "Mod %s has a bad versions URL: %s".formatted(mod.modId(), mod.versionsUrl()));
+            NotifyLogger.warn(false, "Mod %s has a malformed JSON URL", mod.modId());
         } catch (IOException e) {
-            NotifyModInit.LOGGER.log(Level.WARN, "Caught exception reading version JSON for mod %s: %s".formatted(mod.modId(), mod.versionsUrl()));
+            NotifyLogger.warn(false, "Caught IO exception reading JSON of mod %s", mod.modId());
         } catch (VersionParsingException e) {
-            NotifyModInit.LOGGER.log(Level.WARN, "Could not parse version for mod %s: %s".formatted(mod.modId(), mod.versionsUrl()));
+            NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.modId());
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    NotifyModInit.LOGGER.log(Level.WARN, "Caught exception closing JSON input stream for mod %s: %s".formatted(mod.modId(), mod.versionsUrl()));
+                    NotifyLogger.warn(false, "Failed to close JSON input stream of mod %s", mod.modId());
                 }
             }
         }

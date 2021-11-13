@@ -1,8 +1,11 @@
 {
   "required": true,
-  "package": "io.github.jamalam360.mixin",
+  "package": "io.github.jamalam360.notify.mixin",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [],
+  "mixins": [
+    "FabricModMixin",
+    "ModBadgeRendererMixin"
+  ],
   "client": [],
   "server": [],
   "injectors": {

@@ -37,6 +37,7 @@ jobs:
         if: ${{ runner.os != 'Windows' && env.run != 'false' }}
         run: chmod +x ./gradlew
       - name: Update Licenses
+        continue-on-error: true
         if: ${{  env.run != 'false'  }}
         run: |
           ./gradlew updateLicenses

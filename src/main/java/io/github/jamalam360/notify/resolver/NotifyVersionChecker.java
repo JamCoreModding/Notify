@@ -24,111 +24,81 @@
 
 package io.github.jamalam360.notify.resolver;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.NotifyLogger;
-import io.github.jamalam360.notify.resolver.NotifyMod;
+import io.github.jamalam360.notify.resolver.api.GradlePropertiesResolver;
+import io.github.jamalam360.notify.resolver.api.JsonFileResolver;
+import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author Jamalam360
  */
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class NotifyVersionChecker {
-    private static final Gson GSON = new Gson();
+    private static Version unsupportedVersion = null;
 
-    public static Version getCurrentVersion(NotifyMod mod) {
-        return FabricLoader.getInstance().getModContainer(mod.modId()).get().getMetadata().getVersion();
+    static {
+        try {
+            unsupportedVersion = Version.parse("0.0.0");
+        } catch (VersionParsingException ignored) {
+        }
     }
 
     public static Version getMinecraftVersion() {
         return FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
     }
 
-    public static VersionComparisonResult checkVersion(NotifyMod mod) {
+    public static VersionComparisonResult checkVersion(ModContainer mod) {
         Version latestVersion = getLatestVersion(mod);
 
-        if (latestVersion != null) {
-            return VersionComparisonOperator.EQUAL.test(getCurrentVersion(mod), latestVersion) ? VersionComparisonResult.UPDATED : VersionComparisonResult.OUTDATED;
+        if (VersionComparisonOperator.EQUAL.test(latestVersion, unsupportedVersion)) {
+            return VersionComparisonResult.UNSUPPORTED;
+        } else if (latestVersion != null) {
+            return VersionComparisonOperator.EQUAL.test(mod.getMetadata().getVersion(), latestVersion) ? VersionComparisonResult.UPDATED : VersionComparisonResult.OUTDATED;
         } else {
             return VersionComparisonResult.FAILURE;
         }
     }
 
-    public static Version getLatestVersion(NotifyMod mod) {
-        JsonReader reader = null;
-
+    public static Version getLatestVersion(ModContainer mod) {
         try {
-            URL versionsUrl = new URL(mod.versionsUrl());
-            reader = GSON.newJsonReader(new InputStreamReader(versionsUrl.openStream()));
-
-            reader.beginObject();
-            boolean notFound = true;
-            Version finalResult = null;
-
-            while (reader.hasNext() && notFound) {
-                if (reader.nextName().equals(mod.modId())) {
-                    reader.beginObject();
-
-                    Version wildcardVersion = null;
-                    Version specificVersion = null;
-                    Version minecraftVersion = getMinecraftVersion();
-
-                    while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
-                        String name = reader.nextName();
-                        String str = reader.nextString();
-
-                        if (name.equals("*")) {
-                            wildcardVersion = Version.parse(str);
-                        } else {
-                            Version vers = Version.parse(name);
-                            if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersion)) {
-                                specificVersion = Version.parse(str);
-                            }
-                        }
-                    }
-
-                    finalResult = specificVersion == null ? wildcardVersion : specificVersion;
-                    notFound = false;
-                }
-            }
-
-            if (notFound || finalResult == null) {
-                NotifyLogger.warn(false, "\"Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", mod.modId());
-            } else {
-                return finalResult;
+            if (mod.getMetadata().containsCustomValue("notify_json")) {
+                return JsonFileResolver.resolve(mod.getMetadata().getCustomValue("notify_json").getAsString(), mod.getMetadata().getId(), getMinecraftVersion());
+            } else if (mod.getMetadata().containsCustomValue("notify_gradle_properties_url") && mod.getMetadata().containsCustomValue("notify_gradle_properties_key")) {
+                return GradlePropertiesResolver.resolve(mod.getMetadata().getCustomValue("notify_gradle_properties_url").getAsString(), mod.getMetadata().getCustomValue("notify_gradle_properties_key").getAsString());
+            } else if (mod.getMetadata().getContact().get("homepage").isPresent()) {
+                if (mod.getMetadata().getContact().get("homepage").get().contains("modrinth")) {
+                    return ModrinthApiResolver.resolve(mod.getMetadata().getContact().get("homepage").get());
+                }   //else if (mod.getMetadata().getContact().get("homepage").get().contains("curseforge")) {
+                //  return CurseForgeApiResolver.resolve();
+                //}
             }
         } catch (MalformedURLException e) {
-            NotifyLogger.warn(false, "Mod %s has a malformed JSON URL", mod.modId());
+            NotifyLogger.warn(false, "Mod %s has a malformed JSON URL", mod.getMetadata().getId());
+            return null;
         } catch (IOException e) {
-            NotifyLogger.warn(false, "Caught IO exception reading JSON of mod %s", mod.modId());
+            NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
+            e.printStackTrace();
+            return null;
         } catch (VersionParsingException e) {
-            NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.modId());
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    NotifyLogger.warn(false, "Failed to close JSON input stream of mod %s", mod.modId());
-                }
-            }
+            NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.getMetadata().getId());
+            return null;
         }
 
-        return null;
+        return unsupportedVersion;
     }
 
     public enum VersionComparisonResult {
         UPDATED,
         OUTDATED,
-        FAILURE
+        FAILURE,
+        UNSUPPORTED
     }
 }

@@ -27,20 +27,17 @@ package io.github.jamalam360.notify;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
-import io.github.jamalam360.notify.resolver.NotifyMod;
-import io.github.jamalam360.notify.resolver.NotifyModFetcher;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.LiteralText;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("ConstantConditions")
 public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
     public static Mod.Badge UPDATE_BADGE;
@@ -51,39 +48,30 @@ public class NotifyModInit implements ModInitializer {
 
         NotifyLogger.info(false, "Checking versions...");
 
-        List<NotifyMod> notifyMods = NotifyModFetcher.getModsWithNotify();
-
-        for (NotifyMod notifyMod : notifyMods) {
+        for (ModContainer notifyMod : FabricLoader.getInstance().getAllMods()) {
             NotifyVersionChecker.VersionComparisonResult result = NotifyVersionChecker.checkVersion(notifyMod);
 
             if (result == NotifyVersionChecker.VersionComparisonResult.OUTDATED) {
-                if (NotifyModInit.getConfig().verboseLogging) {
-                    NotifyLogger.info(
-                            true,
-                            "Mod %s has updates available; the latest version is v%s, while you have v%s (fetched latest version from %s)",
-                            notifyMod.modId(),
-                            NotifyVersionChecker.getLatestVersion(notifyMod).getFriendlyString(),
-                            NotifyVersionChecker.getCurrentVersion(notifyMod),
-                            notifyMod.versionsUrl()
-                    );
-                } else {
-                    NotifyLogger.info(
-                            false,
-                            "Mod %s has updates available; the latest version is v%s, while you have v%s",
-                            notifyMod.modId(),
-                            NotifyVersionChecker.getLatestVersion(notifyMod).getFriendlyString(),
-                            NotifyVersionChecker.getCurrentVersion(notifyMod)
-                    );
-                }
-            } else {
+                NotifyLogger.info(
+                        false,
+                        "Mod %s has updates available",
+                        notifyMod.getMetadata().getId()
+                );
+            } else if (result == NotifyVersionChecker.VersionComparisonResult.UPDATED) {
                 NotifyLogger.info(
                         true,
                         "Mod %s is updated to the latest version",
-                        notifyMod.modId()
+                        notifyMod.getMetadata().getId()
+                );
+            } else if (result == NotifyVersionChecker.VersionComparisonResult.FAILURE) {
+                NotifyLogger.info(
+                        true,
+                        "Failed to get version of mod %s",
+                        notifyMod.getMetadata().getId()
                 );
             }
 
-            NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.modId(), result);
+            NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.getMetadata().getId(), result);
         }
 
         Map<String, String> statusMapPlain = new HashMap<>();

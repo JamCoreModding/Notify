@@ -63,6 +63,9 @@ public class ModBadgeRendererMixin {
                 case OUTDATED -> {
                     return new LiteralText("Update Available");
                 }
+                case UNSUPPORTED -> {
+                    return new LiteralText("Unsupported");
+                }
                 default -> { // FAILURE, or nothing
                     return new LiteralText("Failed to Fetch Version");
                 }

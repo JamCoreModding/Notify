@@ -28,8 +28,9 @@
     "notify.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.3",
-    "fabric": "*"
+    "fabricloader": ">=0.12.5",
+    "cloth-config2": "*",
+    "modmenu": "*"
   },
   "custom": {
     "notify_gradle_properties_url": "https://raw.githubusercontent.com/JamCoreModding/Notify/main/gradle.properties",

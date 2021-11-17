@@ -1,0 +1,12 @@
+{
+  "text.autoconfig.notify.title": "Notify Config (Requires Restart)",
+
+  "text.autoconfig.notify.option.verboseLogging": "Verbose Logging",
+  "text.autoconfig.notify.option.verboseLogging.@Tooltip": "Enable extra logging",
+
+  "text.autoconfig.notify.option.displayUpdatedBadge": "Display 'Updated' Badge",
+  "text.autoconfig.notify.option.displayUpdatedBadge.@Tooltip": "Enable the badge that tells you a mod is up-to-date",
+
+  "text.autoconfig.notify.option.displayUnsupportedBadge": "Display 'Unsupported' Badge",
+  "text.autoconfig.notify.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify"
+}

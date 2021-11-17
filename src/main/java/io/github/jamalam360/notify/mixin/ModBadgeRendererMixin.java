@@ -28,11 +28,14 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.ModBadgeRenderer;
 import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -47,7 +50,33 @@ public class ModBadgeRendererMixin {
     @Shadow
     protected Mod mod;
 
+    @Unique
+    private Text notify$capturedText = null;
+
     //region Development Environment Redirects
+    @Group(name = "notify$drawBadgeRedirect")
+    @Dynamic("Modifying Class From ModMenu")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/ModBadgeRenderer;drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/OrderedText;IIII)V"
+            )
+    )
+    public void notify$dev$drawBadgeRedirect(ModBadgeRenderer instance, MatrixStack matrixStack, OrderedText text, int outlineColor, int fillColor, int mouseX, int mouseY) {
+        if (notify$capturedText.asString().equals("Updated")) {
+            if (NotifyModInit.getConfig().displayUpdatedBadge) {
+                instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+            }
+        } else if (notify$capturedText.asString().equals("Unsupported")) {
+            if (NotifyModInit.getConfig().displayUnsupportedBadge) {
+                instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+            }
+        } else {
+            instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+        }
+    }
+
     @Group(name = "notify$getTextRedirect")
     @Dynamic("Modifying Class From ModMenu")
     @Redirect(
@@ -58,26 +87,23 @@ public class ModBadgeRendererMixin {
             )
     )
     public Text notify$dev$getTextRedirect(Mod.Badge instance) {
+        Text returnValue;
+
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
-                case UPDATED -> {
-                    return new LiteralText("Updated");
-                }
-                case OUTDATED -> {
-                    return new LiteralText("Update Available");
-                }
-                case UNSUPPORTED -> {
-                    return new LiteralText("Unsupported");
-                }
-                default -> { // FAILURE, or nothing
-                    return new LiteralText("Failed to Fetch Version");
-                }
+                case UPDATED -> returnValue = new LiteralText("Updated");
+                case OUTDATED -> returnValue = new LiteralText("Update Available");
+                case UNSUPPORTED -> returnValue = new LiteralText("Unsupported");
+                default -> returnValue = new LiteralText("Failed to Fetch Version");
             }
         } else {
-            return instance.getText();
+            returnValue = instance.getText();
         }
+
+        notify$capturedText = returnValue;
+        return returnValue;
     }
 
     @Group(name = "notify$getOutlineColorRedirect")
@@ -140,6 +166,29 @@ public class ModBadgeRendererMixin {
     //endregion
 
     //region Production Environment Redirects
+    @Group(name = "notify$drawBadgeRedirect")
+    @Dynamic("Modifying Class From ModMenu")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/ModBadgeRenderer;drawBadge(Lnet/minecraft/class_4587;Lnet/minecraft/class_4581;IIII)V"
+            )
+    )
+    public void notify$production$drawBadgeRedirect(ModBadgeRenderer instance, MatrixStack matrixStack, OrderedText text, int outlineColor, int fillColor, int mouseX, int mouseY) {
+        if (notify$capturedText.asString().equals("Updated")) {
+            if (NotifyModInit.getConfig().displayUpdatedBadge) {
+                instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+            }
+        } else if (notify$capturedText.asString().equals("Unsupported")) {
+            if (NotifyModInit.getConfig().displayUnsupportedBadge) {
+                instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+            }
+        } else {
+            instance.drawBadge(matrixStack, text, outlineColor, fillColor, mouseX, mouseY);
+        }
+    }
+
     @Group(name = "notify$getTextRedirect")
     @Dynamic("Modifying Class From ModMenu")
     @Redirect(
@@ -150,26 +199,23 @@ public class ModBadgeRendererMixin {
             )
     )
     public Text notify$production$getTextRedirect(Mod.Badge instance) {
+        Text returnValue;
+
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
-                case UPDATED -> {
-                    return new LiteralText("Updated");
-                }
-                case OUTDATED -> {
-                    return new LiteralText("Update Available");
-                }
-                case UNSUPPORTED -> {
-                    return new LiteralText("Unsupported");
-                }
-                default -> { // FAILURE, or nothing
-                    return new LiteralText("Failed to Fetch Version");
-                }
+                case UPDATED -> returnValue = new LiteralText("Updated");
+                case OUTDATED -> returnValue = new LiteralText("Update Available");
+                case UNSUPPORTED -> returnValue = new LiteralText("Unsupported");
+                default -> returnValue = new LiteralText("Failed to Fetch Version");
             }
         } else {
-            return instance.getText();
+            returnValue = instance.getText();
         }
+
+        notify$capturedText = returnValue;
+        return returnValue;
     }
 
     @Group(name = "notify$getOutlineColorRedirect")

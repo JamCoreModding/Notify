@@ -33,26 +33,29 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
  * @author Jamalam360
  */
 
+@SuppressWarnings("DuplicatedCode")
 @Mixin(ModBadgeRenderer.class)
 public class ModBadgeRendererMixin {
     @Shadow(remap = false)
     protected Mod mod;
 
+    //region Get Text
+    @Group(name = "DrawBadgeGetText")
     @Redirect(
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getText()Lnet/minecraft/text/Text;"
-            ),
-            remap = false
+            )
     )
-    public Text notify$getTextRedirect(Mod.Badge instance) {
+    public Text notify$getTextRedirectDev(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -75,15 +78,48 @@ public class ModBadgeRendererMixin {
         }
     }
 
+    @Group(name = "DrawBadgeGetText")
     @Redirect(
-            method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getText()Lnet/minecraft/class_2561;"
+            )
+    )
+    public Text notify$getTextRedirectProd(Mod.Badge instance) {
+        if (instance == NotifyModInit.UPDATE_BADGE) {
+            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
+
+            switch (version) {
+                case UPDATED -> {
+                    return new LiteralText("Updated");
+                }
+                case OUTDATED -> {
+                    return new LiteralText("Update Available");
+                }
+                case UNSUPPORTED -> {
+                    return new LiteralText("Unsupported");
+                }
+                default -> { // FAILURE, or nothing
+                    return new LiteralText("Failed to Fetch Version");
+                }
+            }
+        } else {
+            return instance.getText();
+        }
+    }
+    //endregion
+
+    //region Get Outline Color
+    @Group(name = "DrawBadgeGetOutlineColor")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getOutlineColor()I"
-            ),
-            remap = false
+            )
     )
-    public int notify$getOutLineColorRedirect(Mod.Badge instance) {
+    public int notify$getOutLineColorRedirectProd(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -103,15 +139,45 @@ public class ModBadgeRendererMixin {
         }
     }
 
+    @Group(name = "DrawBadgeGetOutlineColor")
     @Redirect(
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
-            ),
-            remap = false
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getOutlineColor()I"
+            )
     )
-    public int notify$getFillColorRedirect(Mod.Badge instance) {
+    public int notify$getOutLineColorRedirectDev(Mod.Badge instance) {
+        if (instance == NotifyModInit.UPDATE_BADGE) {
+            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
+
+            switch (version) {
+                case UPDATED -> {
+                    return 0xff107454;
+                }
+                case OUTDATED -> {
+                    return 0xff6f6c6a;
+                }
+                default -> { // FAILURE, or nothing
+                    return 0xff841426;
+                }
+            }
+        } else {
+            return instance.getOutlineColor();
+        }
+    }
+    //endregion
+
+    //region Get Fill Color
+    @Group(name = "DrawBadgeGetFillColor")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
+            )
+    )
+    public int notify$getFillColorRedirectProd(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -130,4 +196,33 @@ public class ModBadgeRendererMixin {
             return instance.getFillColor();
         }
     }
+
+    @Group(name = "DrawBadgeGetFillColor")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
+            )
+    )
+    public int notify$getFillColorRedirectDev(Mod.Badge instance) {
+        if (instance == NotifyModInit.UPDATE_BADGE) {
+            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
+
+            switch (version) {
+                case UPDATED -> {
+                    return 0xff093929;
+                }
+                case OUTDATED -> {
+                    return 0xff31302f;
+                }
+                default -> { // FAILURE, or nothing
+                    return 0xff530C17;
+                }
+            }
+        } else {
+            return instance.getFillColor();
+        }
+    }
+    //endregion
 }

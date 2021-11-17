@@ -30,6 +30,7 @@ import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,13 +42,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 
 @SuppressWarnings("DuplicatedCode")
-@Mixin(ModBadgeRenderer.class)
+@Mixin(value = ModBadgeRenderer.class, remap = false)
 public class ModBadgeRendererMixin {
-    @Shadow(remap = false)
+    @Shadow
     protected Mod mod;
 
-    //region Get Text
-    @Group(name = "DrawBadgeGetText")
+    //region Development Environment Redirects
+    @Group(name = "notify$getTextRedirect")
+    @Dynamic("Modifying Class From ModMenu")
     @Redirect(
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
@@ -55,7 +57,7 @@ public class ModBadgeRendererMixin {
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getText()Lnet/minecraft/text/Text;"
             )
     )
-    public Text notify$getTextRedirectDev(Mod.Badge instance) {
+    public Text notify$dev$getTextRedirect(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -78,68 +80,8 @@ public class ModBadgeRendererMixin {
         }
     }
 
-    @Group(name = "DrawBadgeGetText")
-    @Redirect(
-            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getText()Lnet/minecraft/class_2561;"
-            )
-    )
-    public Text notify$getTextRedirectProd(Mod.Badge instance) {
-        if (instance == NotifyModInit.UPDATE_BADGE) {
-            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
-
-            switch (version) {
-                case UPDATED -> {
-                    return new LiteralText("Updated");
-                }
-                case OUTDATED -> {
-                    return new LiteralText("Update Available");
-                }
-                case UNSUPPORTED -> {
-                    return new LiteralText("Unsupported");
-                }
-                default -> { // FAILURE, or nothing
-                    return new LiteralText("Failed to Fetch Version");
-                }
-            }
-        } else {
-            return instance.getText();
-        }
-    }
-    //endregion
-
-    //region Get Outline Color
-    @Group(name = "DrawBadgeGetOutlineColor")
-    @Redirect(
-            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getOutlineColor()I"
-            )
-    )
-    public int notify$getOutLineColorRedirectProd(Mod.Badge instance) {
-        if (instance == NotifyModInit.UPDATE_BADGE) {
-            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
-
-            switch (version) {
-                case UPDATED -> {
-                    return 0xff107454;
-                }
-                case OUTDATED -> {
-                    return 0xff6f6c6a;
-                }
-                default -> { // FAILURE, or nothing
-                    return 0xff841426;
-                }
-            }
-        } else {
-            return instance.getOutlineColor();
-        }
-    }
-
-    @Group(name = "DrawBadgeGetOutlineColor")
+    @Group(name = "notify$getOutlineColorRedirect")
+    @Dynamic("Modifying Class From ModMenu")
     @Redirect(
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
@@ -147,7 +89,7 @@ public class ModBadgeRendererMixin {
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getOutlineColor()I"
             )
     )
-    public int notify$getOutLineColorRedirectDev(Mod.Badge instance) {
+    public int notify$dev$getOutlineColorRedirect(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -166,18 +108,17 @@ public class ModBadgeRendererMixin {
             return instance.getOutlineColor();
         }
     }
-    //endregion
 
-    //region Get Fill Color
-    @Group(name = "DrawBadgeGetFillColor")
+    @Group(name = "notify$getFillColorRedirect")
+    @Dynamic("Modifying Class From ModMenu")
     @Redirect(
-            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
             )
     )
-    public int notify$getFillColorRedirectProd(Mod.Badge instance) {
+    public int notify$dev$getFillColorRedirect(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
@@ -196,16 +137,80 @@ public class ModBadgeRendererMixin {
             return instance.getFillColor();
         }
     }
+    //endregion
 
-    @Group(name = "DrawBadgeGetFillColor")
+    //region Production Environment Redirects
+    @Group(name = "notify$getTextRedirect")
+    @Dynamic("Modifying Class From ModMenu")
     @Redirect(
-            method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getText()Lnet/minecraft/class_2561;"
+            )
+    )
+    public Text notify$production$getTextRedirect(Mod.Badge instance) {
+        if (instance == NotifyModInit.UPDATE_BADGE) {
+            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
+
+            switch (version) {
+                case UPDATED -> {
+                    return new LiteralText("Updated");
+                }
+                case OUTDATED -> {
+                    return new LiteralText("Update Available");
+                }
+                case UNSUPPORTED -> {
+                    return new LiteralText("Unsupported");
+                }
+                default -> { // FAILURE, or nothing
+                    return new LiteralText("Failed to Fetch Version");
+                }
+            }
+        } else {
+            return instance.getText();
+        }
+    }
+
+    @Group(name = "notify$getOutlineColorRedirect")
+    @Dynamic("Modifying Class From ModMenu")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getOutlineColor()I"
+            )
+    )
+    public int notify$production$getOutlineColorRedirect(Mod.Badge instance) {
+        if (instance == NotifyModInit.UPDATE_BADGE) {
+            NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
+
+            switch (version) {
+                case UPDATED -> {
+                    return 0xff107454;
+                }
+                case OUTDATED -> {
+                    return 0xff6f6c6a;
+                }
+                default -> { // FAILURE, or nothing
+                    return 0xff841426;
+                }
+            }
+        } else {
+            return instance.getOutlineColor();
+        }
+    }
+
+    @Group(name = "notify$getFillColorRedirect")
+    @Dynamic("Modifying Class From ModMenu")
+    @Redirect(
+            method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
             )
     )
-    public int notify$getFillColorRedirectDev(Mod.Badge instance) {
+    public int notify$production$getFillColorRedirect(Mod.Badge instance) {
         if (instance == NotifyModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 

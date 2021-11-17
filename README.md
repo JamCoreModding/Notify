@@ -2,6 +2,12 @@ Unobtrusively notify users when mod updates are available
 
 Notify doesn't spam messages in the Minecraft chat, it simply adds a small button to the main menu that can tell you what mods need updating. It also logs information to the console for server owners.
 
+# Dependencies
+
+- Fabric loader >= 0.12.5 (the version API of FLoader was updated in 0.12.5, Notify uses the new API)
+- Mod Menu (to add update badges to mods)
+- Cloth Config API (for configuration)
+
 # Mod Authors
 
 There are multiple ways you can support Notify. If you want to 'set and forget', I recommend using the `gradle.properties` or Modrinth/CurseForge API options.

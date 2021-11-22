@@ -25,12 +25,14 @@
 package io.github.jamalam360.notify.resolver.api;
 
 import com.google.gson.stream.JsonReader;
-import io.github.jamalam360.notify.util.JsonUtils;
+import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.util.WebUtils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,19 +47,57 @@ public class ModrinthApiResolver {
     @SuppressWarnings("RegExpRedundantEscape")
     private static final Pattern URL_PATTERN = Pattern.compile("^((http[s]?|ftp):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$");
 
-    public static Version resolve(String modUrl) throws IOException, IllegalStateException, VersionParsingException {
+    public static Version resolve(String modUrl, String minecraftVersion) throws IOException, IllegalStateException, VersionParsingException {
         Matcher matcher = URL_PATTERN.matcher(modUrl);
         //noinspection ResultOfMethodCallIgnored
         matcher.matches();
-        String versionsUrl = API_URL + VERSIONS.replace("{mod_id}", getModrinthId(matcher.group(6).substring(0, matcher.group(6).length() - 1)));
 
-        JsonReader reader = WebUtils.openJson(versionsUrl);
+        //List<String> versions = getModVersions(getModrinthId(matcher.group(6).substring(0, matcher.group(6).length() - 1)), minecraftVersion);
+        List<String> versions = getModVersions("AANobbMI", minecraftVersion);
+        //TODO Get actual game version rather than ID
+        return Version.parse(versions.get(versions.size() - 1));
+    }
+
+    private static List<String> getModVersions(String modId, String minecraftVersion) throws IOException {
+        List<String> versions = new ArrayList<>();
+
+        String url = API_URL + VERSIONS.replace("{mod_id}", modId);
+        JsonReader reader = WebUtils.openJson(url);
+
         reader.beginArray();
-        reader.beginObject();
-        String result = JsonUtils.getString(reader, "version_number");
-        reader.close();
+        boolean finished = false;
+        String currentId = "";
 
-        return Version.parse(result);
+        while (!finished) {
+            if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                reader.beginObject();
+            } else if (reader.peek() == JsonToken.END_OBJECT) {
+                reader.endObject();
+            } else if (reader.peek() == JsonToken.END_ARRAY) {
+                finished = true;
+            } else if (reader.peek() == JsonToken.NAME) {
+                String name = reader.nextName();
+                if (name.equals("id")) {
+                    currentId = reader.nextString();
+                } else if (name.equals("game_versions")) {
+                    reader.beginArray();
+
+                    while (reader.peek() != JsonToken.END_ARRAY) {
+                        String version = reader.nextString();
+                        if (version.equals(minecraftVersion)) {
+                            versions.add(currentId);
+                        }
+                    }
+
+                    reader.endArray();
+                } else {
+                    reader.skipValue();
+                }
+            }
+        }
+
+        reader.close();
+        return versions;
     }
 
     private static String getModrinthId(String modSlug) throws IOException {

@@ -28,13 +28,16 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.text.LiteralText;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +47,12 @@ public class NotifyModInit implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        try {
+            System.out.println(ModrinthApiResolver.resolve("https://modrinth.com/mod/sodium", "1.17.1").getFriendlyString());
+        } catch (IOException | VersionParsingException e) {
+            e.printStackTrace();
+        }
+
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
 
         NotifyLogger.info(false, "Checking versions...");

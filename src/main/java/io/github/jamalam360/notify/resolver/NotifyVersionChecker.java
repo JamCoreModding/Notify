@@ -75,7 +75,7 @@ public class NotifyVersionChecker {
                 return GradlePropertiesResolver.resolve(mod.getMetadata().getCustomValue("notify_gradle_properties_url").getAsString(), mod.getMetadata().getCustomValue("notify_gradle_properties_key").getAsString());
             } else if (mod.getMetadata().getContact().get("homepage").isPresent()) {
                 if (mod.getMetadata().getContact().get("homepage").get().contains("modrinth")) {
-                    return ModrinthApiResolver.resolve(mod.getMetadata().getContact().get("homepage").get());
+                    return ModrinthApiResolver.resolve(mod.getMetadata().getContact().get("homepage").get(), getMinecraftVersion().getFriendlyString());
                 }   //else if (mod.getMetadata().getContact().get("homepage").get().contains("curseforge")) {
                 //  return CurseForgeApiResolver.resolve();
                 //}

@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.notify.resolver;
 
+import io.github.jamalam360.notify.NotifyErrorHandler;
 import io.github.jamalam360.notify.NotifyLogger;
 import io.github.jamalam360.notify.resolver.api.CurseForgeApiResolver;
 import io.github.jamalam360.notify.resolver.api.GradlePropertiesResolver;
@@ -75,6 +76,8 @@ public class NotifyVersionChecker {
 
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
+
+        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId());
 
         for (VersionResolver resolver : RESOLVERS) {
             if (resolver.canResolve(mod.getMetadata())) {

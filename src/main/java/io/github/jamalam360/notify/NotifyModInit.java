@@ -103,6 +103,8 @@ public class NotifyModInit implements ModInitializer {
                                 ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
                                         e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
                                 ) / ((double) FabricLoader.getInstance().getAllMods().size()) * 100));
+
+        NotifyErrorHandler.finishedResolving();
     }
 
     public static ModConfig getConfig() {

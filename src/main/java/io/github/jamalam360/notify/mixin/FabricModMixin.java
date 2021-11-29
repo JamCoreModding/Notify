@@ -51,7 +51,7 @@ public class FabricModMixin {
             remap = false
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
-        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId())) {
+        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !container.getMetadata().getId().equals("minecraft") && container.getMetadata().getAuthors().stream().noneMatch(p -> p.getName().equals("FabricMC"))) {
             this.badges.add(NotifyModInit.UPDATE_BADGE);
         }
     }

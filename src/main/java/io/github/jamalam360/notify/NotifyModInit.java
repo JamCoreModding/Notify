@@ -102,7 +102,7 @@ public class NotifyModInit implements ModInitializer {
                         .format(
                                 ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
                                         e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
-                                ) / ((double) FabricLoader.getInstance().getAllMods().size()) * 100));
+                                ) / ((double) FabricLoader.getInstance().getAllMods().stream().filter(m -> m.getMetadata().getAuthors().stream().anyMatch(p -> !p.getName().equals("FabricMC")) && !m.getMetadata().getId().equals("minecraft")).count()) * 100));
 
         NotifyErrorHandler.finishedResolving();
     }

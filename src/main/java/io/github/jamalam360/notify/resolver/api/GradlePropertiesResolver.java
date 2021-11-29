@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * @author Jamalam360
  */
 public class GradlePropertiesResolver implements VersionResolver {
-    private static final String REGEX_BASE = "{property_name}=(\\d+\\.\\d+\\.\\d+)";
+    private static final String REGEX_BASE = "{property_name}\\s*=\\s*(\\d+\\.\\d+\\.\\d+)";
 
     @Override
     public boolean canResolve(ModMetadata metadata) {

@@ -77,7 +77,7 @@ public class NotifyVersionChecker {
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
 
-        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId());
+        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + "(" + mod.getMetadata().getId() + ")");
 
         for (VersionResolver resolver : RESOLVERS) {
             if (resolver.canResolve(mod.getMetadata())) {

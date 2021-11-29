@@ -43,6 +43,9 @@ public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
     public static Mod.Badge UPDATE_BADGE;
 
+    //TODO: Fetch URLs from _any_ contact section of fabric.mod.json
+    //TODO: Add more tests
+
     @Override
     public void onInitialize() {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);

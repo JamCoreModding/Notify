@@ -39,5 +39,5 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean displayUpdatedBadge = true;
     @ConfigEntry.Gui.Tooltip
-    public boolean displayUnsupportedBadge = true;
+    public boolean displayUnsupportedBadge = false;
 }

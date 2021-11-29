@@ -26,9 +26,12 @@ package io.github.jamalam360.notify.resolver.api;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import io.github.jamalam360.notify.resolver.VersionResolver;
+import io.github.jamalam360.notify.util.JsonUtils;
 import io.github.jamalam360.notify.util.WebUtils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,28 +40,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Used to resolve the latest version of a mod via the Modrinth API.
  * @author Jamalam360
  */
-public class ModrinthApiResolver {
+public class ModrinthApiResolver implements VersionResolver {
     private static final String API_URL = "https://api.modrinth.com";
     private static final String MODS = "/api/v1/mod/{mod_id}";
     private static final String VERSIONS = "/api/v1/mod/{mod_id}/version";
+    private static final String VERSION = "/api/v1/version/{version_id}";
 
     @SuppressWarnings("RegExpRedundantEscape")
     private static final Pattern URL_PATTERN = Pattern.compile("^((http[s]?|ftp):\\/)?\\/?([^:\\/\\s]+)((\\/\\w+)*\\/)([\\w\\-\\.]+[^#?\\s]+)(.*)?(#[\\w\\-]+)?$");
 
-    public static Version resolve(String modUrl, String minecraftVersion) throws IOException, IllegalStateException, VersionParsingException {
-        Matcher matcher = URL_PATTERN.matcher(modUrl);
-        //noinspection ResultOfMethodCallIgnored
-        matcher.matches();
-
-        //List<String> versions = getModVersions(getModrinthId(matcher.group(6).substring(0, matcher.group(6).length() - 1)), minecraftVersion);
-        List<String> versions = getModVersions("AANobbMI", minecraftVersion);
-        //TODO Get actual game version rather than ID
-        return Version.parse(versions.get(versions.size() - 1));
+    @Override
+    public boolean canResolve(ModMetadata metadata) {
+        return metadata.getContact().get("homepage").isPresent() && metadata.getContact().get("homepage").get().contains("modrinth");
     }
 
-    private static List<String> getModVersions(String modId, String minecraftVersion) throws IOException {
+    @SuppressWarnings({"OptionalGetWithoutIsPresent", "ResultOfMethodCallIgnored"}) // This method won't be run without a homepage present
+    @Override
+    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        String modUrl = metadata.getContact().get("homepage").get();
+
+        Matcher matcher = URL_PATTERN.matcher(modUrl);
+        matcher.matches();
+        List<Version> versions = getModVersions(getModrinthId(matcher.group(6)), minecraftVersion); //.substring(0, matcher.group(6).length() - 1)
+
+        return versions.get(0);
+    }
+
+    private static List<Version> getModVersions(String modId, String minecraftVersion) throws IOException, VersionParsingException {
         List<String> versions = new ArrayList<>();
 
         String url = API_URL + VERSIONS.replace("{mod_id}", modId);
@@ -97,11 +108,25 @@ public class ModrinthApiResolver {
         }
 
         reader.close();
-        return versions;
+
+        List<Version> versionsParsed = new ArrayList<>();
+
+        for (String s : versions) {
+            versionsParsed.add(getVersionFromId(s));
+        }
+
+        return versionsParsed;
+    }
+
+    private static Version getVersionFromId(String versionId) throws IOException, VersionParsingException {
+        JsonReader reader = WebUtils.openJson(API_URL + VERSION.replace("{version_id}", versionId));
+        reader.beginObject();
+        return Version.parse(JsonUtils.getString(reader, "version_number"));
     }
 
     private static String getModrinthId(String modSlug) throws IOException {
         String modUrl = API_URL + MODS.replace("{mod_id}", modSlug);
+
         JsonReader reader = WebUtils.openJson(modUrl);
 
         reader.beginObject();

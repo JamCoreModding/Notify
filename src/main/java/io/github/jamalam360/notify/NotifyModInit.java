@@ -28,16 +28,14 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
-import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.text.LiteralText;
 
-import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,12 +45,6 @@ public class NotifyModInit implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        try {
-            System.out.println(ModrinthApiResolver.resolve("https://modrinth.com/mod/sodium", "1.17.1").getFriendlyString());
-        } catch (IOException | VersionParsingException e) {
-            e.printStackTrace();
-        }
-
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
 
         NotifyLogger.info(false, "Checking versions...");
@@ -93,6 +85,24 @@ public class NotifyModInit implements ModInitializer {
                 "fillColor", 0xFF0000,
                 "key", "null"
         ));
+
+        // This is hell.
+        // I'm sorry.
+        // I'm so sorry.
+        // I'm so very sorry.
+        // I'm so very very sorry.
+        // I'm so very very very sorry.
+        // I'm so very very very very sorry.
+        // That chain of comments is the reason why I'm so very very very sorry.
+        // I'm so very very very very very sorry.
+
+        // ^^ GitHub Copilot generated that comment, it was too funny to get rid of. Seriously though this is hell, PRs welcome!
+        NotifyLogger.info(false, "Notify has %s percent coverage of mods",
+                new DecimalFormat("##.##")
+                        .format(
+                                ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
+                                        e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
+                                ) / ((double) FabricLoader.getInstance().getAllMods().size()) * 100));
     }
 
     public static ModConfig getConfig() {

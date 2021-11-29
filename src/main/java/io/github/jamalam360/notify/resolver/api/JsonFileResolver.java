@@ -24,36 +24,38 @@
 
 package io.github.jamalam360.notify.resolver.api;
 
-import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.resolver.VersionResolver;
+import io.github.jamalam360.notify.util.WebUtils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 /**
  * @author Jamalam360
  */
-public class JsonFileResolver {
-    private static final Gson GSON = new Gson();
+public class JsonFileResolver implements VersionResolver {
+    @Override
+    public boolean canResolve(ModMetadata metadata) {
+        return metadata.containsCustomValue("notify_json");
+    }
 
-    public static Version resolve(String url, String modId, Version minecraftVersion) throws IOException, VersionParsingException {
-        JsonReader reader;
-
-        URL versionsUrl = new URL(url);
-        reader = GSON.newJsonReader(new InputStreamReader(versionsUrl.openStream()));
+    @Override
+    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        JsonReader reader = WebUtils.openJson(metadata.getCustomValue("notify_json").getAsString());
+        Version minecraftVersionParsed = Version.parse(minecraftVersion);
 
         reader.beginObject();
         boolean notFound = true;
         Version finalResult = null;
 
         while (reader.hasNext() && notFound) {
-            if (reader.nextName().equals(modId)) {
+            if (reader.nextName().equals(metadata.getId())) {
                 reader.beginObject();
 
                 Version wildcardVersion = null;
@@ -67,7 +69,7 @@ public class JsonFileResolver {
                         wildcardVersion = Version.parse(str);
                     } else {
                         Version vers = Version.parse(name);
-                        if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersion)) {
+                        if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersionParsed)) {
                             specificVersion = Version.parse(str);
                         }
                     }
@@ -81,10 +83,10 @@ public class JsonFileResolver {
         reader.close();
 
         if (notFound || finalResult == null) {
-            NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", modId);
+            NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", metadata.getId());
             return null;
         } else {
             return finalResult;
         }
-}
+    }
 }

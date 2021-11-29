@@ -141,7 +141,8 @@ public class ModBadgeRendererMixin {
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I",
+                    args = {"log=true"}
             )
     )
     public int notify$dev$getFillColorRedirect(Mod.Badge instance) {
@@ -172,7 +173,7 @@ public class ModBadgeRendererMixin {
             method = "drawBadge(Lnet/minecraft/class_4587;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/ModBadgeRenderer;drawBadge(Lnet/minecraft/class_4587;Lnet/minecraft/class_4581;IIII)V"
+                    target = "Lcom/terraformersmc/modmenu/util/mod/ModBadgeRenderer;drawBadge(Lnet/minecraft/class_4587;Lnet/minecraft/class_5481;IIII)V"
             )
     )
     public void notify$production$drawBadgeRedirect(ModBadgeRenderer instance, MatrixStack matrixStack, OrderedText text, int outlineColor, int fillColor, int mouseX, int mouseY) {

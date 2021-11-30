@@ -33,7 +33,7 @@
     "modmenu": "*"
   },
   "custom": {
-    "notify_gradle_properties_url": "https://raw.githubusercontent.com/JamCoreModding/Notify/main/gradle.properties",
+    "notify_gradle_properties_url": "https://raw.githubusercontent.com/JamCoreModding/Notify/release/1.18/gradle.properties",
     "notify_gradle_properties_key": "mod_version"
   }
 }

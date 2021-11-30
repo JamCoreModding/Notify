@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.test;
+package io.github.jamalam360.notify.test.metadata;
 
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.metadata.*;

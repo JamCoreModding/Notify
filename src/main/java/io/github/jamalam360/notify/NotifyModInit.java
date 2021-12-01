@@ -48,7 +48,6 @@ public class NotifyModInit implements ModInitializer {
     @Override
     public void onInitialize() {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
-
         NotifyLogger.info(false, "Checking versions...");
 
         for (ModContainer notifyMod : FabricLoader.getInstance().getAllMods()) {

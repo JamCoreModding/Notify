@@ -41,6 +41,7 @@ import java.util.Map;
 
 public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
+    public static String MOD_COVERAGE = "0%";
     public static Mod.Badge UPDATE_BADGE;
 
     //TODO: Add JSON File Tests
@@ -76,6 +77,8 @@ public class NotifyModInit implements ModInitializer {
             NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.getMetadata().getId(), result);
         }
 
+        NotifyErrorHandler.finishedResolving();
+
         Map<String, String> statusMapPlain = new HashMap<>();
         NotifyModInit.MOD_UPDATE_STATUS_MAP.forEach((modId, result) -> statusMapPlain.put(modId, result.name()));
         FabricLoader.getInstance().getObjectShare().put("notify:notify_statuses", statusMapPlain);
@@ -98,14 +101,14 @@ public class NotifyModInit implements ModInitializer {
         // I'm so very very very very very sorry.
 
         // ^^ GitHub Copilot generated that comment, it was too funny to get rid of. Seriously though this is hell, PRs welcome!
-        NotifyLogger.info(false, "Notify has %s percent coverage of mods",
-                new DecimalFormat("##.##")
-                        .format(
-                                ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
-                                        e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
-                                ) / ((double) FabricLoader.getInstance().getAllMods().stream().filter(m -> m.getMetadata().getAuthors().stream().anyMatch(p -> !p.getName().equals("FabricMC")) && !m.getMetadata().getId().equals("minecraft")).count()) * 100));
 
-        NotifyErrorHandler.finishedResolving();
+        MOD_COVERAGE = new DecimalFormat("##.##")
+                .format(
+                        ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
+                                e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
+                        ) / ((double) FabricLoader.getInstance().getAllMods().stream().filter(m -> m.getMetadata().getAuthors().stream().anyMatch(p -> !p.getName().equals("FabricMC")) && !m.getMetadata().getId().equals("minecraft")).count()) * 100) + "%";
+
+        NotifyLogger.info(false, "Notify has %s percent coverage of mods", MOD_COVERAGE);
     }
 
     public static ModConfig getConfig() {

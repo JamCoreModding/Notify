@@ -40,4 +40,6 @@ public class ModConfig implements ConfigData {
     public boolean displayUpdatedBadge = true;
     @ConfigEntry.Gui.Tooltip
     public boolean displayUnsupportedBadge = false;
+    @ConfigEntry.Gui.Tooltip
+    public boolean renderMainMenuText = true;
 }

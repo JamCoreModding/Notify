@@ -38,7 +38,6 @@ import java.util.function.Supplier;
  * Needed to add Notify info to the crash report if it crashes during mod update resolution
  * @author Jamalam360
  */
-
 @Mixin(SystemDetails.class)
 public abstract class SystemDetailsMixin {
     @Shadow

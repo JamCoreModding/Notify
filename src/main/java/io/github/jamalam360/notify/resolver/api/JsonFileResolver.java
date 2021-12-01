@@ -28,7 +28,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.NotifyLogger;
 import io.github.jamalam360.notify.resolver.VersionResolver;
-import io.github.jamalam360.notify.util.WebUtils;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -47,7 +47,7 @@ public class JsonFileResolver implements VersionResolver {
 
     @Override
     public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
-        JsonReader reader = WebUtils.openJson(metadata.getCustomValue("notify_json").getAsString());
+        JsonReader reader = Utils.openJsonFromUrl(metadata.getCustomValue("notify_json").getAsString());
         Version minecraftVersionParsed = Version.parse(minecraftVersion);
 
         reader.beginObject();

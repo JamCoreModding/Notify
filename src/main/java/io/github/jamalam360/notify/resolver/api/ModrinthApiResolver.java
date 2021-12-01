@@ -27,8 +27,7 @@ package io.github.jamalam360.notify.resolver.api;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.resolver.VersionResolver;
-import io.github.jamalam360.notify.util.JsonUtils;
-import io.github.jamalam360.notify.util.WebUtils;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -54,18 +53,16 @@ public class ModrinthApiResolver implements VersionResolver {
 
     @Override
     public boolean canResolve(ModMetadata metadata) {
-        return metadata.getContact().get("homepage").isPresent() && metadata.getContact().get("homepage").get().contains("modrinth");
+        return !Utils.getContactWithContent(metadata.getContact(), "modrinth").equals("");
     }
 
-    @SuppressWarnings({"OptionalGetWithoutIsPresent", "ResultOfMethodCallIgnored"}) // This method won't be run without a homepage present
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     @Override
     public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
-        String modUrl = metadata.getContact().get("homepage").get();
-
+        String modUrl = Utils.getContactWithContent(metadata.getContact(), "modrinth");
         Matcher matcher = URL_PATTERN.matcher(modUrl);
         matcher.matches();
         List<Version> versions = getModVersions(getModrinthId(matcher.group(6)), minecraftVersion); //.substring(0, matcher.group(6).length() - 1)
-
         return versions.get(0);
     }
 
@@ -73,7 +70,7 @@ public class ModrinthApiResolver implements VersionResolver {
         List<String> versions = new ArrayList<>();
 
         String url = API_URL + VERSIONS.replace("{mod_id}", modId);
-        JsonReader reader = WebUtils.openJson(url);
+        JsonReader reader = Utils.openJsonFromUrl(url);
 
         reader.beginArray();
         boolean finished = false;
@@ -108,7 +105,6 @@ public class ModrinthApiResolver implements VersionResolver {
         }
 
         reader.close();
-
         List<Version> versionsParsed = new ArrayList<>();
 
         for (String s : versions) {
@@ -119,15 +115,16 @@ public class ModrinthApiResolver implements VersionResolver {
     }
 
     private static Version getVersionFromId(String versionId) throws IOException, VersionParsingException {
-        JsonReader reader = WebUtils.openJson(API_URL + VERSION.replace("{version_id}", versionId));
+        JsonReader reader = Utils.openJsonFromUrl(API_URL + VERSION.replace("{version_id}", versionId));
         reader.beginObject();
-        return Version.parse(JsonUtils.getString(reader, "version_number"));
+        Version version = Version.parse(Utils.getKeyFromJson(reader, "version_number"));
+        reader.close();
+        return version;
     }
 
     private static String getModrinthId(String modSlug) throws IOException {
         String modUrl = API_URL + MODS.replace("{mod_id}", modSlug);
-
-        JsonReader reader = WebUtils.openJson(modUrl);
+        JsonReader reader = Utils.openJsonFromUrl(modUrl);
 
         reader.beginObject();
 

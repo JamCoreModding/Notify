@@ -43,8 +43,7 @@ public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
     public static Mod.Badge UPDATE_BADGE;
 
-    //TODO: Fetch URLs from _any_ contact section of fabric.mod.json
-    //TODO: Add more tests
+    //TODO: Add JSON File Tests
 
     @Override
     public void onInitialize() {

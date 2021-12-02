@@ -22,23 +22,27 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.util;
-
-import com.google.gson.stream.JsonReader;
-
-import java.io.IOException;
+package io.github.jamalam360.notify;
 
 /**
  * @author Jamalam360
  */
-public class JsonUtils {
-    public static String getString(JsonReader reader, String key) throws IOException {
-        String name = reader.nextName();
-        while (!name.equals(key) && reader.hasNext()) {
-            reader.skipValue();
-            name = reader.nextName();
-        }
+public class NotifyErrorHandler {
+    private static String currentModId = null;
 
-        return reader.nextString();
+    public static void setCurrentModId(String modId) {
+        currentModId = modId;
+    }
+
+    public static void finishedResolving() {
+        currentModId = null;
+    }
+
+    public static boolean hasError() {
+        return currentModId != null;
+    }
+
+    public static String getErrorMod() {
+        return currentModId;
     }
 }

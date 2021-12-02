@@ -41,12 +41,13 @@ import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
+ * Needed to dynamically change the color and text of badges in Mod Menu, depending on the update status
  * @author Jamalam360
  */
 
 @SuppressWarnings("DuplicatedCode")
 @Mixin(value = ModBadgeRenderer.class, remap = false)
-public class ModBadgeRendererMixin {
+public abstract class ModBadgeRendererMixin {
     @Shadow
     protected Mod mod;
 
@@ -141,7 +142,8 @@ public class ModBadgeRendererMixin {
             method = "drawBadge(Lnet/minecraft/client/util/math/MatrixStack;Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;II)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I"
+                    target = "Lcom/terraformersmc/modmenu/util/mod/Mod$Badge;getFillColor()I",
+                    args = {"log=true"}
             )
     )
     public int notify$dev$getFillColorRedirect(Mod.Badge instance) {

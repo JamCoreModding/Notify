@@ -26,6 +26,7 @@ package io.github.jamalam360.notify.util;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ContactInformation;
 
 import java.io.IOException;
@@ -59,5 +60,13 @@ public class Utils {
     public static JsonReader openJsonFromUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
         return GSON.newJsonReader(new InputStreamReader(url.openStream()));
+    }
+
+    public static boolean isParentFapi(ModContainer mod) {
+        return isFapi(mod) && mod.getMetadata().getId().equals("fabric-api");
+    }
+
+    public static boolean isFapi(ModContainer mod) {
+        return mod.getMetadata().getId().startsWith("fabric") && mod.getMetadata().containsCustomValue("fabric-api:module-lifecycle");
     }
 }

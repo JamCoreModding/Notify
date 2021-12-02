@@ -30,6 +30,7 @@ import io.github.jamalam360.notify.resolver.api.CurseForgeApiResolver;
 import io.github.jamalam360.notify.resolver.api.GradlePropertiesResolver;
 import io.github.jamalam360.notify.resolver.api.JsonFileResolver;
 import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
@@ -63,6 +64,10 @@ public class NotifyVersionChecker {
     }
 
     public static VersionComparisonResult checkVersion(ModContainer mod) {
+        if (mod.getMetadata().getId().equals("minecraft") || (Utils.isFapi(mod) && !Utils.isParentFapi(mod))) {
+            return VersionComparisonResult.IGNORED;
+        }
+
         Version latestVersion = getLatestVersion(mod);
 
         if (VersionComparisonOperator.EQUAL.test(latestVersion, unsupportedVersion)) {
@@ -77,22 +82,25 @@ public class NotifyVersionChecker {
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
         NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + "(" + mod.getMetadata().getId() + ")");
+        try {
+            if (Utils.isFapi(mod) && Utils.isParentFapi(mod)) {
+                return RESOLVERS.get(2).resolveLatestVersion(mod.getMetadata(), minecraftVersion); // Use Modrinth for FAPI because it's the best to use for it
+            }
 
-        for (VersionResolver resolver : RESOLVERS) {
-            if (resolver.canResolve(mod.getMetadata())) {
-                try {
+            for (VersionResolver resolver : RESOLVERS) {
+                if (resolver.canResolve(mod.getMetadata())) {
                     return resolver.resolveLatestVersion(mod.getMetadata(), minecraftVersion);
-                } catch (MalformedURLException e) {
-                    NotifyLogger.warn(false, "Mod %s has a malformed URL", mod.getMetadata().getId());
-                    return null;
-                } catch (IOException e) {
-                    NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
-                    return null;
-                } catch (VersionParsingException e) {
-                    NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.getMetadata().getId());
-                    return null;
                 }
             }
+        } catch (MalformedURLException e) {
+            NotifyLogger.warn(false, "Mod %s has a malformed URL", mod.getMetadata().getId());
+            return null;
+        } catch (IOException e) {
+            NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
+            return null;
+        } catch (VersionParsingException e) {
+            NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.getMetadata().getId());
+            return null;
         }
 
         return unsupportedVersion;
@@ -102,6 +110,7 @@ public class NotifyVersionChecker {
         UPDATED,
         OUTDATED,
         FAILURE,
-        UNSUPPORTED
+        UNSUPPORTED,
+        IGNORED
     }
 }

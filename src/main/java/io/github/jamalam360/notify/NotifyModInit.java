@@ -90,18 +90,6 @@ public class NotifyModInit implements ModInitializer {
                 "key", "null"
         ));
 
-        // This is hell.
-        // I'm sorry.
-        // I'm so sorry.
-        // I'm so very sorry.
-        // I'm so very very sorry.
-        // I'm so very very very sorry.
-        // I'm so very very very very sorry.
-        // That chain of comments is the reason why I'm so very very very sorry.
-        // I'm so very very very very very sorry.
-
-        // ^^ GitHub Copilot generated that comment, it was too funny to get rid of. Seriously though this is hell, PRs welcome!
-
         MOD_COVERAGE = new DecimalFormat("##.##")
                 .format(
                         ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(

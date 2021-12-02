@@ -27,6 +27,7 @@ package io.github.jamalam360.notify.mixin;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
 import io.github.jamalam360.notify.NotifyModInit;
+import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import net.fabricmc.loader.api.ModContainer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,7 +53,7 @@ public abstract class FabricModMixin {
             remap = false
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
-        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !container.getMetadata().getId().equals("minecraft") && container.getMetadata().getAuthors().stream().noneMatch(p -> p.getName().equals("FabricMC"))) {
+        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && NotifyModInit.MOD_UPDATE_STATUS_MAP.get(container.getMetadata().getId()) != NotifyVersionChecker.VersionComparisonResult.IGNORED) {
             this.badges.add(NotifyModInit.UPDATE_BADGE);
         }
     }

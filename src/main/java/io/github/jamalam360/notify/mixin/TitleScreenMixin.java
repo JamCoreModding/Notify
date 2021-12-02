@@ -42,8 +42,8 @@ public abstract class TitleScreenMixin extends Screen {
                     matrices,
                     this.textRenderer,
                     "Notify Coverage: " + NotifyModInit.MOD_COVERAGE,
-                    2,
-                    -2,
+                    3,
+                    3,
                     16777215 | MathHelper.ceil(this.doBackgroundFade ? MathHelper.clamp(
                             (this.doBackgroundFade ? (float) (Util.getMeasuringTimeMs() - this.backgroundFadeStart) / 1000.0F : 1.0F) - 1.0F,
                             0.0F,

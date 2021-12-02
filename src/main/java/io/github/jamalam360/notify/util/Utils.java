@@ -26,6 +26,9 @@ package io.github.jamalam360.notify.util;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import io.github.jamalam360.notify.NotifyModInit;
+import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ContactInformation;
 
@@ -68,5 +71,31 @@ public class Utils {
 
     public static boolean isFapi(ModContainer mod) {
         return mod.getMetadata().getId().startsWith("fabric") && mod.getMetadata().containsCustomValue("fabric-api:module-lifecycle");
+    }
+
+    public static boolean isMinecraft(ModContainer mod) {
+        return mod.getMetadata().getId().equals("minecraft");
+    }
+
+    public static int getNotifySupportedModCount() {
+        return (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count();
+    }
+
+    public static int getLoadedNonIgnoredModCount() {
+        int count = 0;
+
+        for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+            if (!mod.getMetadata().getId().equals("minecraft")) {
+                if (isFapi(mod)) {
+                    if (isParentFapi(mod)) {
+                        count++;
+                    }
+                } else {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 }

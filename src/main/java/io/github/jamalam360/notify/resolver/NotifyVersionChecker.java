@@ -64,7 +64,7 @@ public class NotifyVersionChecker {
     }
 
     public static VersionComparisonResult checkVersion(ModContainer mod) {
-        if (mod.getMetadata().getId().equals("minecraft") || (Utils.isFapi(mod) && !Utils.isParentFapi(mod))) {
+        if (Utils.isMinecraft(mod) || (Utils.isFapi(mod) && !Utils.isParentFapi(mod))) {
             return VersionComparisonResult.IGNORED;
         }
 
@@ -81,7 +81,7 @@ public class NotifyVersionChecker {
 
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
-        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + "(" + mod.getMetadata().getId() + ")");
+        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
         try {
             if (Utils.isFapi(mod) && Utils.isParentFapi(mod)) {
                 return RESOLVERS.get(2).resolveLatestVersion(mod.getMetadata(), minecraftVersion); // Use Modrinth for FAPI because it's the best to use for it
@@ -96,6 +96,7 @@ public class NotifyVersionChecker {
             NotifyLogger.warn(false, "Mod %s has a malformed URL", mod.getMetadata().getId());
             return null;
         } catch (IOException e) {
+            e.printStackTrace();
             NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
             return null;
         } catch (VersionParsingException e) {

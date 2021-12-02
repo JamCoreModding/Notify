@@ -28,6 +28,7 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.util.Utils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -92,9 +93,7 @@ public class NotifyModInit implements ModInitializer {
 
         MOD_COVERAGE = new DecimalFormat("##.##")
                 .format(
-                        ((double) MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(
-                                e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count()
-                        ) / ((double) FabricLoader.getInstance().getAllMods().stream().filter(m -> m.getMetadata().getAuthors().stream().anyMatch(p -> !p.getName().equals("FabricMC")) && !m.getMetadata().getId().equals("minecraft")).count()) * 100) + "%";
+                        ((double) Utils.getNotifySupportedModCount() /  (double) Utils.getLoadedNonIgnoredModCount()) * 100D) + "%";
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", MOD_COVERAGE);
     }

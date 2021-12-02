@@ -64,7 +64,7 @@ public class NotifyVersionChecker {
     }
 
     public static VersionComparisonResult checkVersion(ModContainer mod) {
-        if (Utils.isMinecraft(mod) || (Utils.isFapi(mod) && !Utils.isParentFapi(mod))) {
+        if (Utils.isIgnored(mod)) {
             return VersionComparisonResult.IGNORED;
         }
 

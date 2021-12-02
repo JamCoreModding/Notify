@@ -77,6 +77,18 @@ public class Utils {
         return mod.getMetadata().getId().equals("minecraft");
     }
 
+    public static boolean isIgnored(ModContainer mod) {
+        if (!mod.getMetadata().getId().equals("minecraft") && !mod.getMetadata().getId().equals("fabricloader") && !mod.getMetadata().getId().equals("java")) {
+            if (isFapi(mod)) {
+                return !isParentFapi(mod);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public static int getNotifySupportedModCount() {
         return (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count();
     }
@@ -85,14 +97,8 @@ public class Utils {
         int count = 0;
 
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-            if (!mod.getMetadata().getId().equals("minecraft")) {
-                if (isFapi(mod)) {
-                    if (isParentFapi(mod)) {
-                        count++;
-                    }
-                } else {
-                    count++;
-                }
+            if (!isIgnored(mod)) {
+                count++;
             }
         }
 

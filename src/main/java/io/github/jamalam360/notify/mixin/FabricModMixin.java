@@ -27,7 +27,7 @@ package io.github.jamalam360.notify.mixin;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
 import io.github.jamalam360.notify.NotifyModInit;
-import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.ModContainer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,12 +40,15 @@ import java.util.Set;
 
 /**
  * Adds badges to every FabricMod in Mod Menu, excluding Minecraft and FAPI
+ *
  * @author Jamalam360
  */
 
 @Mixin(FabricMod.class)
 public abstract class FabricModMixin {
-    @Shadow(remap = false) @Final private Set<Mod.Badge> badges;
+    @Shadow(remap = false)
+    @Final
+    private Set<Mod.Badge> badges;
 
     @Inject(
             method = "<init>",
@@ -53,7 +56,7 @@ public abstract class FabricModMixin {
             remap = false
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
-        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && NotifyModInit.MOD_UPDATE_STATUS_MAP.get(container.getMetadata().getId()) != NotifyVersionChecker.VersionComparisonResult.IGNORED) {
+        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !Utils.isIgnored(container)) {
             this.badges.add(NotifyModInit.UPDATE_BADGE);
         }
     }

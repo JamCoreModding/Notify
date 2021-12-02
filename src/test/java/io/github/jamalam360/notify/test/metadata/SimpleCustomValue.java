@@ -22,24 +22,38 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.config;
+package io.github.jamalam360.notify.test.metadata;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.fabricmc.loader.api.metadata.CustomValue;
 
-/**
- * @author Jamalam360
- */
+public record SimpleCustomValue(String value) implements CustomValue {
+    @Override
+    public String getAsString() {
+        return value();
+    }
 
-@Config(name = "notify")
-public class ModConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
-    public boolean verboseLogging = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUpdatedBadge = true;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUnsupportedBadge = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean renderMainMenuText = true;
+    @Override
+    public CvType getType() {
+        return CvType.STRING;
+    }
+
+    @Override
+    public CvObject getAsObject() {
+        return null;
+    }
+
+    @Override
+    public CvArray getAsArray() {
+        return null;
+    }
+
+    @Override
+    public Number getAsNumber() {
+        return null;
+    }
+
+    @Override
+    public boolean getAsBoolean() {
+        return false;
+    }
 }

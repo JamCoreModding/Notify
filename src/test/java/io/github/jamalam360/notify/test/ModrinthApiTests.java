@@ -43,16 +43,6 @@ public class ModrinthApiTests {
     private final ModMetadata test3 = new HomepageModMetadata("https://modrinth.com/mod/dashloader");
 
     /**
-     * Check whether canResolve works
-     */
-    @Test
-    public void testCanResolve() {
-        assertTrue(resolver.canResolve(test1));
-        assertTrue(resolver.canResolve(test2));
-        assertTrue(resolver.canResolve(test3));
-    }
-
-    /**
      * Check whether everything works under ideal conditions
      */
     @Test

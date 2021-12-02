@@ -42,16 +42,12 @@ public record HomepageModMetadata(String homepage) implements ModMetadata {
         return new ContactInformation() {
             @Override
             public Optional<String> get(String key) {
-                if (key.equals("homepage")) {
-                    return Optional.of(HomepageModMetadata.this.homepage);
-                }
-
-                return Optional.empty();
+                return Optional.of(HomepageModMetadata.this.homepage);
             }
 
             @Override
             public Map<String, String> asMap() {
-                return null;
+                return Map.of("homepage", HomepageModMetadata.this.homepage);
             }
         };
     }

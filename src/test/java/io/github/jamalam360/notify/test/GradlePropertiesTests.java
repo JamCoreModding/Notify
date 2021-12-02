@@ -43,19 +43,6 @@ public class GradlePropertiesTests {
     private final ModMetadata test6 = new GradlePropertiesModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/gradle.properties/6.properties", "mod_version");
 
     /**
-     * Check whether canResolve works
-     */
-    @Test
-    public void testCanResolve() {
-        assertTrue(resolver.canResolve(test1));
-        assertTrue(resolver.canResolve(test2));
-        assertTrue(resolver.canResolve(test3));
-        assertTrue(resolver.canResolve(test4));
-        assertTrue(resolver.canResolve(test5));
-        assertTrue(resolver.canResolve(test6));
-    }
-
-    /**
      * Check whether everything works under ideal conditions
      */
     @Test

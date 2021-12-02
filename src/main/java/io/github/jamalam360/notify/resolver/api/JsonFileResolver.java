@@ -50,33 +50,41 @@ public class JsonFileResolver implements VersionResolver {
         JsonReader reader = Utils.openJsonFromUrl(metadata.getCustomValue("notify_json").getAsString());
         Version minecraftVersionParsed = Version.parse(minecraftVersion);
 
-        reader.beginObject();
         boolean notFound = true;
         Version finalResult = null;
 
+        reader.beginObject();
+
         while (reader.hasNext() && notFound) {
-            if (reader.nextName().equals(metadata.getId())) {
-                reader.beginObject();
+            if (reader.peek() == JsonToken.NAME) {
+                String objectName = reader.nextName();
+                if (objectName.equals(metadata.getId())) {
+                    if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                        reader.beginObject();
 
-                Version wildcardVersion = null;
-                Version specificVersion = null;
+                        Version wildcardVersion = null;
+                        Version specificVersion = null;
 
-                while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
-                    String name = reader.nextName();
-                    String str = reader.nextString();
+                        while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
+                            String name = reader.nextName();
+                            String str = reader.nextString();
 
-                    if (name.equals("*")) {
-                        wildcardVersion = Version.parse(str);
-                    } else {
-                        Version vers = Version.parse(name);
-                        if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersionParsed)) {
-                            specificVersion = Version.parse(str);
+                            if (name.equals("*")) {
+                                wildcardVersion = Version.parse(str);
+                            } else {
+                                Version vers = Version.parse(name);
+                                if (VersionComparisonOperator.SAME_TO_NEXT_MINOR.test(vers, minecraftVersionParsed)) {
+                                    specificVersion = Version.parse(str);
+                                }
+                            }
                         }
-                    }
-                }
 
-                finalResult = specificVersion == null ? wildcardVersion : specificVersion;
-                notFound = false;
+                        finalResult = specificVersion == null ? wildcardVersion : specificVersion;
+                        notFound = false;
+                    }
+                } else {
+                    reader.skipValue();
+                }
             }
         }
 
@@ -84,7 +92,7 @@ public class JsonFileResolver implements VersionResolver {
 
         if (notFound || finalResult == null) {
             NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", metadata.getId());
-            return null;
+            return Version.parse("0.0.0");
         } else {
             return finalResult;
         }

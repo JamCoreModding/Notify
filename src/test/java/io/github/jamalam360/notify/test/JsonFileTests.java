@@ -38,14 +38,6 @@ public class JsonFileTests {
     private final ModMetadata test1 = new JsonFileModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/json/1.json");
 
     /**
-     * Check whether canResolve works
-     */
-    @Test
-    public void testCanResolve() {
-        assertTrue(resolver.canResolve(test1));
-    }
-
-    /**
      * Check the parsing works on snapshot and RC version numbering.
      */
     @Test

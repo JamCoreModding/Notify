@@ -63,7 +63,7 @@ public class Utils {
     }
 
     public static boolean isParentFapi(ModContainer mod) {
-        return isFapi(mod) && mod.getMetadata().getId().equals("fabric-api");
+        return isFapi(mod) && mod.getMetadata().getId().equals("fabric");
     }
 
     public static boolean isFapi(ModContainer mod) {

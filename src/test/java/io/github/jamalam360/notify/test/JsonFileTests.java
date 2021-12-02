@@ -24,5 +24,35 @@
 
 package io.github.jamalam360.notify.test;
 
+import io.github.jamalam360.notify.resolver.api.JsonFileResolver;
+import io.github.jamalam360.notify.test.metadata.JsonFileModMetadata;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class JsonFileTests {
+    private final JsonFileResolver resolver = new JsonFileResolver();
+
+    private final ModMetadata test1 = new JsonFileModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/json/1.json");
+
+    /**
+     * Check whether canResolve works
+     */
+    @Test
+    public void testCanResolve() {
+        assertTrue(resolver.canResolve(test1));
+    }
+
+    /**
+     * Check the parsing works on snapshot and RC version numbering.
+     */
+    @Test
+    public void testResolveLatestVersion() throws Exception {
+        assertEquals("1.1.0", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString());
+        assertEquals("1.2.0", resolver.resolveLatestVersion(test1, "1.17.1").getFriendlyString());
+        assertEquals("1.3.0", resolver.resolveLatestVersion(test1, "1.13.1").getFriendlyString());
+        assertEquals("1.4.0", resolver.resolveLatestVersion(test1, "1.18.1").getFriendlyString());
+    }
 }

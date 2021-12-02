@@ -30,6 +30,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Jamalam360
@@ -40,6 +41,16 @@ public class ModrinthApiTests {
     private final ModMetadata test1 = new HomepageModMetadata("https://modrinth.com/mod/lambdynamiclights");
     private final ModMetadata test2 = new HomepageModMetadata("https://modrinth.com/mod/fabric-api");
     private final ModMetadata test3 = new HomepageModMetadata("https://modrinth.com/mod/dashloader");
+
+    /**
+     * Check whether canResolve works
+     */
+    @Test
+    public void testCanResolve() {
+        assertTrue(resolver.canResolve(test1));
+        assertTrue(resolver.canResolve(test2));
+        assertTrue(resolver.canResolve(test3));
+    }
 
     /**
      * Check whether everything works under ideal conditions

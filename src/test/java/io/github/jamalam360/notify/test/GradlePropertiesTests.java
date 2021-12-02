@@ -30,6 +30,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GradlePropertiesTests {
     private final GradlePropertiesResolver resolver = new GradlePropertiesResolver();
@@ -40,6 +41,19 @@ public class GradlePropertiesTests {
     private final ModMetadata test4 = new GradlePropertiesModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/gradle.properties/4.properties", "mod_version");
     private final ModMetadata test5 = new GradlePropertiesModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/gradle.properties/5.properties", "different_version_key");
     private final ModMetadata test6 = new GradlePropertiesModMetadata("https://raw.githubusercontent.com/JamCoreModding/NotifyTesting/main/gradle.properties/6.properties", "mod_version");
+
+    /**
+     * Check whether canResolve works
+     */
+    @Test
+    public void testCanResolve() {
+        assertTrue(resolver.canResolve(test1));
+        assertTrue(resolver.canResolve(test2));
+        assertTrue(resolver.canResolve(test3));
+        assertTrue(resolver.canResolve(test4));
+        assertTrue(resolver.canResolve(test5));
+        assertTrue(resolver.canResolve(test6));
+    }
 
     /**
      * Check whether everything works under ideal conditions

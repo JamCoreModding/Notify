@@ -8,5 +8,8 @@
   "text.autoconfig.notify.option.displayUpdatedBadge.@Tooltip": "Enable the badge that tells you a mod is up-to-date",
 
   "text.autoconfig.notify.option.displayUnsupportedBadge": "Display 'Unsupported' Badge",
-  "text.autoconfig.notify.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify"
+  "text.autoconfig.notify.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify",
+
+  "text.autoconfig.notify.option.renderMainMenuText": "Render 'Notify Coverage' Text",
+  "text.autoconfig.notify.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack"
 }

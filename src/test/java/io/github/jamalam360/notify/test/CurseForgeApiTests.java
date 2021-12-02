@@ -22,24 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.config;
+package io.github.jamalam360.notify.test;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-
-/**
- * @author Jamalam360
- */
-
-@Config(name = "notify")
-public class ModConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
-    public boolean verboseLogging = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUpdatedBadge = true;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUnsupportedBadge = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean renderMainMenuText = true;
+public class CurseForgeApiTests {
 }

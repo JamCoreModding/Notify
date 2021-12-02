@@ -24,8 +24,10 @@
 
 package io.github.jamalam360.notify.resolver.api;
 
+import io.github.jamalam360.notify.resolver.VersionResolver;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -37,12 +39,19 @@ import java.util.regex.Pattern;
 /**
  * @author Jamalam360
  */
-public class GradlePropertiesResolver {
-    private static final String REGEX_BASE = "{{property_name}}=(\\d+\\.\\d+\\.\\d+)";
+public class GradlePropertiesResolver implements VersionResolver {
+    private static final String REGEX_BASE = "{property_name}\\s*=\\s*(\\d+\\.\\d+\\.\\d+)";
 
-    public static Version resolve(String propertiesUrl, String propertyName) throws IOException, VersionParsingException {
-        URL url = new URL(propertiesUrl);
-        Pattern p = Pattern.compile(REGEX_BASE.replace("{{property_name}}", propertyName));
+    @Override
+    public boolean canResolve(ModMetadata metadata) {
+        return metadata.containsCustomValue("notify_gradle_properties_url") && metadata.containsCustomValue("notify_gradle_properties_key");
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Override
+    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        URL url = new URL(metadata.getCustomValue("notify_gradle_properties_url").getAsString());
+        Pattern p = Pattern.compile(REGEX_BASE.replace("{property_name}", metadata.getCustomValue("notify_gradle_properties_key").getAsString()));
         Matcher matcher = p.matcher(IOUtils.toString(url.openStream(), Charset.defaultCharset()));
         matcher.find();
         return Version.parse(matcher.group(1));

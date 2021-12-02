@@ -68,13 +68,21 @@ Using `gradle.properties` is ideal if you update that file whenever you update y
 
 ### Using the Modrinth/CurseForge API
 
-Currently, only the Modrinth API is supported, but I am working on the CurseForge API. To use this method you must simply have the `homepage` field in your `fabric.mod.json` set to the URL of your mod on Modrinth or CurseForge:
+Currently, only the Modrinth API is supported, but I am working on the CurseForge API. To use this method you must simply have a field in your `fabric.mod.json` set to the URL of your mod on Modrinth or CurseForge, for example:
 
 ```json
 "contact": {
     "homepage": "your-modrinth-url"
-  }
+}
 ```
+
+```json
+"contact": {
+    "any-custom-field": "your-modrinth-url"
+}
+```
+
+You can use any field name as long as you have a Modrinth URL within the field.
 
 Notify will automatically get the latest version of the mod available on Modrinth or CurseForge.
 

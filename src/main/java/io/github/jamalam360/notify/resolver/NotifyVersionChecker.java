@@ -24,10 +24,13 @@
 
 package io.github.jamalam360.notify.resolver;
 
+import io.github.jamalam360.notify.NotifyErrorHandler;
 import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.resolver.api.CurseForgeApiResolver;
 import io.github.jamalam360.notify.resolver.api.GradlePropertiesResolver;
 import io.github.jamalam360.notify.resolver.api.JsonFileResolver;
 import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
@@ -36,26 +39,35 @@ import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jamalam360
  */
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class NotifyVersionChecker {
+    private static final List<VersionResolver> RESOLVERS = new ArrayList<>();
     private static Version unsupportedVersion = null;
 
     static {
+        // THESE ARE IN A SPECIFIC ORDER! This is to preserve an 'order of priority' if a mod supports multiple methods
+        RESOLVERS.add(new JsonFileResolver());
+        RESOLVERS.add(new GradlePropertiesResolver());
+        RESOLVERS.add(new ModrinthApiResolver());
+        RESOLVERS.add(new CurseForgeApiResolver());
+
         try {
             unsupportedVersion = Version.parse("0.0.0");
-        } catch (VersionParsingException ignored) {
+        } catch (VersionParsingException ignored) { // Will never happen ¯\_(ツ)_/¯.
         }
     }
 
-    public static Version getMinecraftVersion() {
-        return FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion();
-    }
-
     public static VersionComparisonResult checkVersion(ModContainer mod) {
+        if (Utils.isIgnored(mod)) {
+            return VersionComparisonResult.IGNORED;
+        }
+
         Version latestVersion = getLatestVersion(mod);
 
         if (VersionComparisonOperator.EQUAL.test(latestVersion, unsupportedVersion)) {
@@ -68,24 +80,24 @@ public class NotifyVersionChecker {
     }
 
     public static Version getLatestVersion(ModContainer mod) {
+        String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
+        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
         try {
-            if (mod.getMetadata().containsCustomValue("notify_json")) {
-                return JsonFileResolver.resolve(mod.getMetadata().getCustomValue("notify_json").getAsString(), mod.getMetadata().getId(), getMinecraftVersion());
-            } else if (mod.getMetadata().containsCustomValue("notify_gradle_properties_url") && mod.getMetadata().containsCustomValue("notify_gradle_properties_key")) {
-                return GradlePropertiesResolver.resolve(mod.getMetadata().getCustomValue("notify_gradle_properties_url").getAsString(), mod.getMetadata().getCustomValue("notify_gradle_properties_key").getAsString());
-            } else if (mod.getMetadata().getContact().get("homepage").isPresent()) {
-                if (mod.getMetadata().getContact().get("homepage").get().contains("modrinth")) {
-                    return ModrinthApiResolver.resolve(mod.getMetadata().getContact().get("homepage").get());
-                }   //else if (mod.getMetadata().getContact().get("homepage").get().contains("curseforge")) {
-                //  return CurseForgeApiResolver.resolve();
-                //}
+            if (Utils.isFapi(mod) && Utils.isParentFapi(mod)) {
+                return RESOLVERS.get(2).resolveLatestVersion(mod.getMetadata(), minecraftVersion); // Use Modrinth for FAPI because it's the best to use for it
+            }
+
+            for (VersionResolver resolver : RESOLVERS) {
+                if (resolver.canResolve(mod.getMetadata())) {
+                    return resolver.resolveLatestVersion(mod.getMetadata(), minecraftVersion);
+                }
             }
         } catch (MalformedURLException e) {
-            NotifyLogger.warn(false, "Mod %s has a malformed JSON URL", mod.getMetadata().getId());
+            NotifyLogger.warn(false, "Mod %s has a malformed URL", mod.getMetadata().getId());
             return null;
         } catch (IOException e) {
-            NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
             e.printStackTrace();
+            NotifyLogger.warn(false, "Caught IO exception on mod %s", mod.getMetadata().getId());
             return null;
         } catch (VersionParsingException e) {
             NotifyLogger.warn(false, "Failed to parse version for mod %s", mod.getMetadata().getId());
@@ -99,6 +111,7 @@ public class NotifyVersionChecker {
         UPDATED,
         OUTDATED,
         FAILURE,
-        UNSUPPORTED
+        UNSUPPORTED,
+        IGNORED
     }
 }

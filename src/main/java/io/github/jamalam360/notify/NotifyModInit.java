@@ -28,6 +28,7 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.util.Utils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -35,17 +36,20 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.LiteralText;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
+    public static String MOD_COVERAGE = "0%";
     public static Mod.Badge UPDATE_BADGE;
+
+    //TODO: Add JSON File Tests
 
     @Override
     public void onInitialize() {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
-
         NotifyLogger.info(false, "Checking versions...");
 
         for (ModContainer notifyMod : FabricLoader.getInstance().getAllMods()) {
@@ -74,6 +78,8 @@ public class NotifyModInit implements ModInitializer {
             NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.getMetadata().getId(), result);
         }
 
+        NotifyErrorHandler.finishedResolving();
+
         Map<String, String> statusMapPlain = new HashMap<>();
         NotifyModInit.MOD_UPDATE_STATUS_MAP.forEach((modId, result) -> statusMapPlain.put(modId, result.name()));
         FabricLoader.getInstance().getObjectShare().put("notify:notify_statuses", statusMapPlain);
@@ -84,6 +90,12 @@ public class NotifyModInit implements ModInitializer {
                 "fillColor", 0xFF0000,
                 "key", "null"
         ));
+
+        MOD_COVERAGE = new DecimalFormat("##.##")
+                .format(
+                        ((double) Utils.getNotifySupportedModCount() /  (double) Utils.getLoadedNonIgnoredModCount()) * 100D) + "%";
+
+        NotifyLogger.info(false, "Notify has %s percent coverage of mods", MOD_COVERAGE);
     }
 
     public static ModConfig getConfig() {

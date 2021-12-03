@@ -45,12 +45,15 @@ public class NotifyModInit implements ModInitializer {
     public static String MOD_COVERAGE = "0%";
     public static Mod.Badge UPDATE_BADGE;
 
-    //TODO: Add JSON File Tests
+    public static ModConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+    }
 
     @Override
     public void onInitialize() {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         NotifyLogger.info(false, "Checking versions...");
+        long startTime = System.currentTimeMillis();
 
         for (ModContainer notifyMod : FabricLoader.getInstance().getAllMods()) {
             NotifyVersionChecker.VersionComparisonResult result = NotifyVersionChecker.checkVersion(notifyMod);
@@ -93,12 +96,9 @@ public class NotifyModInit implements ModInitializer {
 
         MOD_COVERAGE = new DecimalFormat("##.##")
                 .format(
-                        ((double) Utils.getNotifySupportedModCount() /  (double) Utils.getLoadedNonIgnoredModCount()) * 100D) + "%";
+                        ((double) Utils.getNotifySupportedModCount() / (double) Utils.getLoadedNonIgnoredModCount()) * 100D) + "%";
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", MOD_COVERAGE);
-    }
-
-    public static ModConfig getConfig() {
-        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        NotifyLogger.info(false, "Notify took %s ms to resolve versions", System.currentTimeMillis() - startTime);
     }
 }

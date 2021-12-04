@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  */
 public class NonSpecifiedGradlePropertiesResolver implements VersionResolver {
     private static final String REGEX_BASE = "^\\s*{property_name}\\s*=\\s*([a-zA-Z0-9.+-]*)";
-    private static final String[] COMMON_KEYS = {"mod_version", "version"};
+    private static final String[] COMMON_KEYS = {"mod_version", "version", "modVersion"};
     private static final String[] COMMON_BRANCHES = {"main", "master"};
 
     private final Map<String, Version> versionModIdCache = new HashMap<>();

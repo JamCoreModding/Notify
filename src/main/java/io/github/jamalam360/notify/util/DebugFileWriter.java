@@ -36,7 +36,7 @@ public class DebugFileWriter {
     public static void write() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Number of non-ignored mods: ").append(NotifyModInit.statistics.getTotalModCount());
+        sb.append("Number of non-blacklisted mods: ").append(NotifyModInit.statistics.getTotalModCount());
         sb.append("\n");
         sb.append("Number of compatible mods: ").append(NotifyModInit.statistics.getTotalSupportedModCount());
         sb.append("\n");

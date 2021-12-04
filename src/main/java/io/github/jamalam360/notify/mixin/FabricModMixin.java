@@ -43,16 +43,15 @@ import java.util.Set;
  * @author Jamalam360
  */
 
-@Mixin(FabricMod.class)
+@Mixin(value = FabricMod.class, remap = false)
 public abstract class FabricModMixin {
-    @Shadow(remap = false)
+    @Shadow
     @Final
     private Set<Mod.Badge> badges;
 
     @Inject(
             method = "<init>",
-            at = @At("TAIL"),
-            remap = false
+            at = @At("TAIL")
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
         if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !Utils.isIgnored(container)) {

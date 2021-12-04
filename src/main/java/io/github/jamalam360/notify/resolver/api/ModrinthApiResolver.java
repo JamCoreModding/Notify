@@ -26,6 +26,7 @@ package io.github.jamalam360.notify.resolver.api;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.VersionResolver;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.Version;
@@ -110,6 +111,8 @@ public class ModrinthApiResolver implements VersionResolver {
         for (String s : versions) {
             versionsParsed.add(getVersionFromId(s));
         }
+
+        NotifyModInit.statistics.modrinthMod();
 
         return versionsParsed;
     }

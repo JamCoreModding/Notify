@@ -27,6 +27,7 @@ package io.github.jamalam360.notify.resolver.api;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.VersionResolver;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.Version;
@@ -89,6 +90,8 @@ public class JsonFileResolver implements VersionResolver {
         }
 
         reader.close();
+
+        NotifyModInit.statistics.jsonMod();
 
         if (notFound || finalResult == null) {
             NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", metadata.getId());

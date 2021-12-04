@@ -42,7 +42,7 @@ import java.util.Map;
 public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
     public static Mod.Badge UPDATE_BADGE;
-    public static NotifyStatistics statistics = null;
+    public static NotifyStatistics statistics = new NotifyStatistics();
 
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
@@ -85,11 +85,13 @@ public class NotifyModInit implements ModInitializer {
         NotifyModInit.MOD_UPDATE_STATUS_MAP.forEach((modId, result) -> statusMapPlain.put(modId, result.name()));
         FabricLoader.getInstance().getObjectShare().put("notify:notify_statuses", statusMapPlain);
 
-        statistics = new NotifyStatistics((int) (System.currentTimeMillis() - startTime));
+        statistics.update();
+        statistics.setResolveTime((int) (System.currentTimeMillis() - startTime));
         dumpInfoOnNextLaunchIfEnabled();
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", Math.round(NotifyModInit.statistics.getPercentageCoverage() * 100) / 100D);
         NotifyLogger.info(false, "Notify took %d ms to resolve versions", statistics.getResolveTime());
+
     }
 
     private void register() {

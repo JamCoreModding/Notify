@@ -31,20 +31,65 @@ import io.github.jamalam360.notify.util.Utils;
  * @author Jamalam360
  */
 public class NotifyStatistics {
-    public static NotifyStatistics INSTANCE = null;
+    private long resolveTime;
+    private int totalSupportedModCount;
+    private int totalModCount;
+    private double percentageCoverage;
 
-    private final long resolveTime;
-    private final int totalSupportedModCount;
-    private final int totalModCount;
-    private final double percentageCoverage;
+    private int modrinthResolvedCount = 0;
+    private int curseForgeResolvedCount = 0;
+    private int specifiedGradlePropertiesResolvedCount = 0;
+    private int nonSpecifiedGradlePropertiesResolvedCount = 0;
+    private int jsonResolvedCount = 0;
 
-    public NotifyStatistics(long resolveTime) {
-        INSTANCE = this;
-
+    public void update() {
         this.totalModCount = Utils.getLoadedNonIgnoredModCount();
         this.totalSupportedModCount = (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count();
         this.percentageCoverage = ((double) this.totalSupportedModCount / (double) this.totalModCount) * 100D;
+    }
+
+    public void setResolveTime(long resolveTime) {
         this.resolveTime = resolveTime;
+    }
+
+    public void modrinthMod() {
+        modrinthResolvedCount++;
+    }
+
+    public void curseForgeMod() {
+        curseForgeResolvedCount++;
+    }
+
+    public void specifiedGradlePropertiesMod() {
+        specifiedGradlePropertiesResolvedCount++;
+    }
+
+    public void nonSpecifiedGradlePropertiesMod() {
+        nonSpecifiedGradlePropertiesResolvedCount++;
+    }
+
+    public void jsonMod() {
+        jsonResolvedCount++;
+    }
+
+    public int getModrinthResolvedCount() {
+        return modrinthResolvedCount;
+    }
+
+    public int getCurseForgeResolvedCount() {
+        return curseForgeResolvedCount;
+    }
+
+    public int getSpecifiedGradlePropertiesResolvedCount() {
+        return specifiedGradlePropertiesResolvedCount;
+    }
+
+    public int getNonSpecifiedGradlePropertiesResolvedCount() {
+        return nonSpecifiedGradlePropertiesResolvedCount;
+    }
+
+    public int getJsonResolvedCount() {
+        return jsonResolvedCount;
     }
 
     public long getResolveTime() {

@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.notify.resolver.api;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.VersionResolver;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
@@ -42,6 +43,7 @@ public class CurseForgeApiResolver implements VersionResolver {
 
     @Override
     public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        NotifyModInit.statistics.curseForgeMod();
         return null;
     }
 }

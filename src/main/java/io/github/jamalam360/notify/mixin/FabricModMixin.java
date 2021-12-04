@@ -39,8 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Set;
 
 /**
- * Adds badges to every FabricMod in Mod Menu, excluding Minecraft and FAPI
- *
+ * Adds badges to every FabricMod in Mod Menu, excluding ignored mods
  * @author Jamalam360
  */
 

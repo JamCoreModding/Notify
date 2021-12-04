@@ -1,5 +1,5 @@
 {
-  "text.autoconfig.notify/notify_config.title": "Notify Config (Requires Restart)",
+  "text.autoconfig.notify/notify_config.title": "Notify Config",
 
   "text.autoconfig.notify/notify_config.option.verboseLogging": "Verbose Logging",
   "text.autoconfig.notify/notify_config.option.verboseLogging.@Tooltip": "Enable extra logging",
@@ -20,5 +20,10 @@
   "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties": "Enabled Non-Specified Gradle",
   "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[0]": "Enable fetching of mod versions from gradle.properties",
   "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[1]": "files that aren't specified in by the author. This",
-  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[2]": "could cause false positives/negatives with some mods."
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[2]": "could cause false positives/negatives with some mods.",
+
+  "text.autoconfig.notify/notify_config.option.blacklist": "Mod Blacklist",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[0]": "A blacklist of mod IDs that will be ignored by Notify.",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[1]": "This means that Notify won't attempt to resolve versions",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[2]": "for the specified mods."
 }

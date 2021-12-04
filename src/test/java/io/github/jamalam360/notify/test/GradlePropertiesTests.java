@@ -48,7 +48,7 @@ public class GradlePropertiesTests {
     @Test
     public void testResolveLatestVersionNormal() throws Exception {
         assertEquals("1.1.0", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
-        assertEquals("1.1.0", resolver.resolveLatestVersion(test5, "1.16.5").getFriendlyString()); // Different version key
+        assertEquals("1.1.0+rc1", resolver.resolveLatestVersion(test5, "1.16.5").getFriendlyString()); // Different version key
     }
 
     /**
@@ -57,7 +57,7 @@ public class GradlePropertiesTests {
     @Test
     public void testResolveLatestVersionVariedMinecraft() throws Exception {
         assertEquals("1.1.0", resolver.resolveLatestVersion(test1, "1.100.1000").getFriendlyString()); // Invalid Minecraft version shouldn't change output
-        assertEquals("1.1.0", resolver.resolveLatestVersion(test5, "").getFriendlyString()); // Invalid Minecraft version shouldn't change output
+        assertEquals("1.1.0+rc1", resolver.resolveLatestVersion(test5, "").getFriendlyString()); // Invalid Minecraft version shouldn't change output
     }
 
     /**
@@ -68,6 +68,6 @@ public class GradlePropertiesTests {
         assertEquals("1.1.0", resolver.resolveLatestVersion(test2, "1.16.5").getFriendlyString()); // gradle.properties has spaces inbetween key values
         assertEquals("1.1.0", resolver.resolveLatestVersion(test3, "1.16.5").getFriendlyString()); // gradle.properties leading spaces
         assertEquals("1.1.0", resolver.resolveLatestVersion(test4, "1.16.5").getFriendlyString()); // gradle.properties trailing spaces
-        assertEquals("1.1.0", resolver.resolveLatestVersion(test6, "1.16.5").getFriendlyString()); // gradle.properties has all of the above
+        assertEquals("1.1.0-build+1", resolver.resolveLatestVersion(test6, "1.16.5").getFriendlyString()); // gradle.properties has all of the above
     }
 }

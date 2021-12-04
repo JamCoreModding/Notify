@@ -22,28 +22,29 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.config;
+package io.github.jamalam360.notify.test;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import io.github.jamalam360.notify.resolver.api.NonSpecifiedGradlePropertiesResolver;
+import io.github.jamalam360.notify.test.metadata.SourcesModMetadata;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jamalam360
  */
+public class NonSpecifiedGradlePropertiesTests {
+    private final NonSpecifiedGradlePropertiesResolver resolver = new NonSpecifiedGradlePropertiesResolver();
 
-@Config(name = "notify/notify_config")
-public class ModConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
-    public boolean verboseLogging = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUpdatedBadge = true;
-    @ConfigEntry.Gui.Tooltip
-    public boolean displayUnsupportedBadge = false;
-    @ConfigEntry.Gui.Tooltip
-    public boolean renderMainMenuText = true;
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean dumpInfoOnLaunch = false;
-    @ConfigEntry.Gui.Tooltip(count = 3)
-    public boolean enableNonSpecifiedGradleProperties = true;
+    private final ModMetadata test1 = new SourcesModMetadata("https://github.com/JamCoreModding/Notify");
+
+    /**
+     * Check whether everything works under ideal conditions
+     */
+    @Test
+    public void testResolveLatestVersionNormal() throws Exception {
+        resolver.canResolve(test1); // Needed to populate the cache
+        assertEquals("1.2.0-rc1", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
+    }
 }

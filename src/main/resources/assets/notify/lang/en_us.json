@@ -13,7 +13,12 @@
   "text.autoconfig.notify/notify_config.option.renderMainMenuText": "Render 'Notify Coverage' Text",
   "text.autoconfig.notify/notify_config.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack",
 
-  "text.autoconfig.notify/notify_config.option.dumpInfoOnNextLaunch": "Dump Info On Next Launch",
-  "text.autoconfig.notify/notify_config.option.dumpInfoOnNextLaunch.@Tooltip[0]": "Enable dumping of debug information on the next launch.",
-  "text.autoconfig.notify/notify_config.option.dumpInfoOnNextLaunch.@Tooltip[1]": "This will only affect the next launch."
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch": "Dump Info On Launch",
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch.@Tooltip[0]": "Enable dumping of debug information on launch.",
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch.@Tooltip[1]": "This will significantly slow down your game launch.",
+
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties": "Enabled Non-Specified Gradle",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[0]": "Enable fetching of mod versions from gradle.properties",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[1]": "files that aren't specified in by the author. This",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[2]": "could cause false positives/negatives with some mods."
 }

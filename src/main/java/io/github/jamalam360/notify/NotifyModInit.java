@@ -88,7 +88,7 @@ public class NotifyModInit implements ModInitializer {
         statistics = new NotifyStatistics((int) (System.currentTimeMillis() - startTime));
         dumpInfoOnNextLaunchIfEnabled();
 
-        NotifyLogger.info(false, "Notify has %s percent coverage of mods", statistics.getPercentageCoverage());
+        NotifyLogger.info(false, "Notify has %s percent coverage of mods", Math.round(NotifyModInit.statistics.getPercentageCoverage() * 100) / 100D);
         NotifyLogger.info(false, "Notify took %d ms to resolve versions", statistics.getResolveTime());
     }
 
@@ -104,8 +104,7 @@ public class NotifyModInit implements ModInitializer {
     }
 
     private void dumpInfoOnNextLaunchIfEnabled() {
-        if (getConfig().dumpInfoOnNextLaunch) {
-            getConfig().dumpInfoOnNextLaunch = false;
+        if (getConfig().dumpInfoOnLaunch) {
             NotifyLogger.info(false, "Dumping debug info to file...");
             DebugFileWriter.write();
         }

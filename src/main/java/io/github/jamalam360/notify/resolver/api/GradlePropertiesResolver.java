@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * @author Jamalam360
  */
 public class GradlePropertiesResolver implements VersionResolver {
-    private static final String REGEX_BASE = "{property_name}\\s*=\\s*(\\d+\\.\\d+\\.\\d+)";
+    private static final String REGEX_BASE = "^\\s*{property_name}\\s*=\\s*([a-zA-Z0-9.+-]*)";
 
     @Override
     public boolean canResolve(ModMetadata metadata) {
@@ -51,7 +51,7 @@ public class GradlePropertiesResolver implements VersionResolver {
     @Override
     public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
         URL url = new URL(metadata.getCustomValue("notify_gradle_properties_url").getAsString());
-        Pattern p = Pattern.compile(REGEX_BASE.replace("{property_name}", metadata.getCustomValue("notify_gradle_properties_key").getAsString()));
+        Pattern p = Pattern.compile(REGEX_BASE.replace("{property_name}", metadata.getCustomValue("notify_gradle_properties_key").getAsString()), Pattern.MULTILINE);
         Matcher matcher = p.matcher(IOUtils.toString(url.openStream(), Charset.defaultCharset()));
         matcher.find();
         return Version.parse(matcher.group(1));

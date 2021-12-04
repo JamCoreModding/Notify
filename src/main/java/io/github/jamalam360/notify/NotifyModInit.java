@@ -28,6 +28,7 @@ import com.terraformersmc.modmenu.util.mod.Mod;
 import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.util.DebugFileWriter;
 import io.github.jamalam360.notify.util.Utils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -100,5 +101,11 @@ public class NotifyModInit implements ModInitializer {
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", MOD_COVERAGE);
         NotifyLogger.info(false, "Notify took %s ms to resolve versions", System.currentTimeMillis() - startTime);
+
+        if (getConfig().dumpInfoOnNextLaunch) {
+            getConfig().dumpInfoOnNextLaunch = false;
+            NotifyLogger.info(false, "Dumping debug info to file...");
+            DebugFileWriter.write();
+        }
     }
 }

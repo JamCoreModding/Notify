@@ -11,5 +11,9 @@
   "text.autoconfig.notify.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify",
 
   "text.autoconfig.notify.option.renderMainMenuText": "Render 'Notify Coverage' Text",
-  "text.autoconfig.notify.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack"
+  "text.autoconfig.notify.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack",
+
+  "text.autoconfig.notify.option.dumpInfoOnNextLaunch": "Dump Info On Next Launch",
+  "text.autoconfig.notify.option.dumpInfoOnNextLaunch.@Tooltip[0]": "Enable dumping of debug information on the next launch.",
+  "text.autoconfig.notify.option.dumpInfoOnNextLaunch.@Tooltip[1]": "This will only affect the next launch."
 }

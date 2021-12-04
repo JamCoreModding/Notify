@@ -42,4 +42,6 @@ public class ModConfig implements ConfigData {
     public boolean displayUnsupportedBadge = false;
     @ConfigEntry.Gui.Tooltip
     public boolean renderMainMenuText = true;
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean dumpInfoOnNextLaunch = false;
 }

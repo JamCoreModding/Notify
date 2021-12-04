@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.notify.config;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -59,4 +60,12 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 3)
     public List<String> blacklist = List.of("minecraft", "fabricloader", "java", "fabric");
+
+    @Override
+    public void validatePostLoad() {
+        try {
+            NotifyModInit.statistics.update();
+        } catch (RuntimeException ignored) { // If the config hasn't finished registering yet, update() will throw an exception
+        }
+    }
 }

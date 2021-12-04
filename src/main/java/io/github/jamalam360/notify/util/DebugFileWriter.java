@@ -40,16 +40,47 @@ public class DebugFileWriter {
         sb.append("\n");
         sb.append("Number of compatible mods: ").append(NotifyModInit.statistics.getTotalSupportedModCount());
         sb.append("\n");
-        sb.append("Percentage coverage: ").append(NotifyModInit.statistics.getPercentageCoverage()).append("%");
+        sb.append("Percentage coverage: ").append(Math.round(NotifyModInit.statistics.getPercentageCoverage() * 100) / 100D).append("%");
         sb.append("\n");
         sb.append("\n");
-        sb.append("Number of mods with Modrinth support: ").append(getModrinthSupportingMods());
+        sb.append("Number of mods with possible Modrinth support: ").append(getModrinthSupportingMods().count())
+                .append(" (").append(((double) getModrinthSupportingMods().count() / (double) NotifyModInit.statistics.getTotalModCount()) * 100D).append("% of non-blacklisted mods)");
         sb.append("\n");
-        sb.append("Number of mods with CurseForge support: ").append(getCurseForgeSupportingMods());
+        sb.append("Number of mods with possible CurseForge support: ").append(getCurseForgeSupportingMods().count())
+                .append(" (").append(((double) getCurseForgeSupportingMods().count() / (double) NotifyModInit.statistics.getTotalModCount()) * 100D).append("% of non-blacklisted mods)");
         sb.append("\n");
-        sb.append("Number of mods with Notify JSON support: ").append(getJsonSupportingMods());
+        sb.append("Number of mods with possible Notify JSON support: ").append(getJsonSupportingMods().count())
+                .append(" (").append(((double) getJsonSupportingMods().count() / (double) NotifyModInit.statistics.getTotalModCount()) * 100D).append("% of non-blacklisted mods)");
         sb.append("\n");
-        sb.append("Number of mods with Notify gradle.properties support: ").append(getGradlePropertiesSupportingMods());
+        sb.append("Number of mods with possible Notify gradle.properties support: ").append(getGradlePropertiesSupportingMods().count())
+                .append(" (").append(((double) getGradlePropertiesSupportingMods().count() / (double) NotifyModInit.statistics.getTotalModCount()) * 100D).append("% of non-blacklisted mods)");
+
+        sb.append("\n");
+        sb.append("\n");
+
+        sb.append("Number of mods resolved with: ");
+        sb.append("\n");
+        sb.append("    Modrinth: ").append(NotifyModInit.statistics.getModrinthResolvedCount())
+                .append(" (").append((NotifyModInit.statistics.getModrinthResolvedCount() / NotifyModInit.statistics.getTotalSupportedModCount()) * 100).append("% of supported mods)");
+        sb.append("\n");
+        sb.append("    CurseForge: ").append(NotifyModInit.statistics.getCurseForgeResolvedCount())
+                .append(" (").append((NotifyModInit.statistics.getCurseForgeResolvedCount() / NotifyModInit.statistics.getTotalSupportedModCount()) * 100).append("% of supported mods)");
+        sb.append("\n");
+        sb.append("    gradle.properties: ");
+        sb.append("\n");
+        sb.append("        Explicit: ").append(NotifyModInit.statistics.getSpecifiedGradlePropertiesResolvedCount())
+                .append(" (").append((NotifyModInit.statistics.getSpecifiedGradlePropertiesResolvedCount() / NotifyModInit.statistics.getTotalSupportedModCount()) * 100).append("% of supported mods)");
+        sb.append("\n");
+        sb.append("        Inferred: ").append(NotifyModInit.statistics.getNonSpecifiedGradlePropertiesResolvedCount())
+                .append(" (").append((NotifyModInit.statistics.getNonSpecifiedGradlePropertiesResolvedCount() / NotifyModInit.statistics.getTotalSupportedModCount()) * 100).append("% of supported mods)");
+        sb.append("\n");
+        sb.append("    Notify JSON: ").append(NotifyModInit.statistics.getJsonResolvedCount())
+                .append(" (").append((NotifyModInit.statistics.getJsonResolvedCount() / NotifyModInit.statistics.getTotalSupportedModCount()) * 100).append("% of supported mods)");
+
+        sb.append("\n");
+        sb.append("\n");
+
+        FabricLoader.getInstance().getAllMods().stream().filter(m -> !Utils.isIgnored(m)).forEach(m -> appendMod(sb, m));
 
         try {
             FileWriter writer = new FileWriter(FabricLoader.getInstance().getConfigDir().resolve("notify").resolve("notify_dump.txt").toFile(), false);
@@ -60,23 +91,40 @@ public class DebugFileWriter {
         }
     }
 
+    private static void appendMod(StringBuilder sb, ModContainer mod) {
+        sb.append(mod.getMetadata().getId()).append(":");
+        sb.append("\n");
+        sb.append("    Notify Status: ").append(NotifyModInit.MOD_UPDATE_STATUS_MAP.get(mod.getMetadata().getId()).name());
+        sb.append("\n");
+        sb.append("    Actual Version: ").append(mod.getMetadata().getVersion().getFriendlyString());
+        sb.append("\n");
+        sb.append("    Modrinth Support: ").append(getModrinthSupportingMods().anyMatch(m -> m.getMetadata().getId().equals(mod.getMetadata().getId())));
+        sb.append("\n");
+        sb.append("    CurseForge Support: ").append(getCurseForgeSupportingMods().anyMatch(m -> m.getMetadata().getId().equals(mod.getMetadata().getId())));
+        sb.append("\n");
+        sb.append("    Notify JSON Support: ").append(getJsonSupportingMods().anyMatch(m -> m.getMetadata().getId().equals(mod.getMetadata().getId())));
+        sb.append("\n");
+        sb.append("    Explicit Gradle Properties Support: ").append(getGradlePropertiesSupportingMods().anyMatch(m -> m.getMetadata().getId().equals(mod.getMetadata().getId())));
+        sb.append("\n");
+    }
+
     private static Stream<ModContainer> getNonIgnoredMods() {
         return FabricLoader.getInstance().getAllMods().stream().filter(m -> !Utils.isIgnored(m));
     }
 
-    private static long getModrinthSupportingMods() {
-        return getNonIgnoredMods().filter(m -> !Utils.getContactWithContent(m.getMetadata().getContact(), "modrinth").equals("")).count();
+    private static Stream<ModContainer> getModrinthSupportingMods() {
+        return getNonIgnoredMods().filter(m -> !Utils.getContactWithContent(m.getMetadata().getContact(), "modrinth").equals(""));
     }
 
-    private static long getCurseForgeSupportingMods() {
-        return getNonIgnoredMods().filter(m -> !Utils.getContactWithContent(m.getMetadata().getContact(), "curseforge").equals("")).count();
+    private static Stream<ModContainer> getCurseForgeSupportingMods() {
+        return getNonIgnoredMods().filter(m -> !Utils.getContactWithContent(m.getMetadata().getContact(), "curseforge").equals(""));
     }
 
-    private static long getJsonSupportingMods() {
-        return getNonIgnoredMods().filter(m -> m.getMetadata().containsCustomValue("notify_json")).count();
+    private static Stream<ModContainer> getJsonSupportingMods() {
+        return getNonIgnoredMods().filter(m -> m.getMetadata().containsCustomValue("notify_json"));
     }
 
-    private static long getGradlePropertiesSupportingMods() {
-        return getNonIgnoredMods().filter(m -> m.getMetadata().containsCustomValue("notify_gradle_properties_url") && m.getMetadata().containsCustomValue("notify_gradle_properties_key")).count();
+    private static Stream<ModContainer> getGradlePropertiesSupportingMods() {
+        return getNonIgnoredMods().filter(m -> m.getMetadata().containsCustomValue("notify_gradle_properties_url") && m.getMetadata().containsCustomValue("notify_gradle_properties_key"));
     }
 }

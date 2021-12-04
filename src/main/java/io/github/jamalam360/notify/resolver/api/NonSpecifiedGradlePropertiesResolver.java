@@ -90,6 +90,7 @@ public class NonSpecifiedGradlePropertiesResolver implements VersionResolver {
 
     @Override
     public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        NotifyModInit.statistics.nonSpecifiedGradlePropertiesMod();
         return versionModIdCache.get(metadata.getId());
     }
 }

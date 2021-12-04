@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.notify.resolver.api;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.VersionResolver;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
@@ -54,6 +55,7 @@ public class GradlePropertiesResolver implements VersionResolver {
         Pattern p = Pattern.compile(REGEX_BASE.replace("{property_name}", metadata.getCustomValue("notify_gradle_properties_key").getAsString()), Pattern.MULTILINE);
         Matcher matcher = p.matcher(IOUtils.toString(url.openStream(), Charset.defaultCharset()));
         matcher.find();
+        NotifyModInit.statistics.specifiedGradlePropertiesMod();
         return Version.parse(matcher.group(1));
     }
 }

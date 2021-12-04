@@ -81,7 +81,7 @@ public class NotifyVersionChecker {
 
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
-        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
+        NotifyErrorHandler.setTraceString(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
         try {
             if (Utils.isFapi(mod) && Utils.isParentFapi(mod)) {
                 return RESOLVERS.get(2).resolveLatestVersion(mod.getMetadata(), minecraftVersion); // Use Modrinth for FAPI because it's the best to use for it

@@ -30,8 +30,8 @@ package io.github.jamalam360.notify;
 public class NotifyErrorHandler {
     private static String currentModId = null;
 
-    public static void setCurrentModId(String modId) {
-        currentModId = modId;
+    public static void setTraceString(String trace) {
+        currentModId = trace;
     }
 
     public static void finishedResolving() {
@@ -42,7 +42,7 @@ public class NotifyErrorHandler {
         return currentModId != null;
     }
 
-    public static String getErrorMod() {
+    public static String getErrorTrace() {
         return currentModId;
     }
 }

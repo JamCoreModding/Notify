@@ -46,7 +46,7 @@ public abstract class SystemDetailsMixin {
     @Inject(at = @At("RETURN"), method = "<init>")
     public void notify$addCrashingMod(CallbackInfo info) {
         if (NotifyErrorHandler.hasError()) {
-            addSection("Notify Mod Causing Resolution Error", NotifyErrorHandler::getErrorMod);
+            addSection("Notify Mod Causing Resolution Error", NotifyErrorHandler::getErrorTrace);
         }
     }
 }

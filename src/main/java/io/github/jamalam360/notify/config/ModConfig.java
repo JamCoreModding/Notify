@@ -32,7 +32,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
  * @author Jamalam360
  */
 
-@Config(name = "notify")
+@Config(name = "notify/notify_config")
 public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean verboseLogging = false;

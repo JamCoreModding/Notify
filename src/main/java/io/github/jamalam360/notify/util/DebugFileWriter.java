@@ -24,11 +24,11 @@
 
 package io.github.jamalam360.notify.util;
 
+import io.github.jamalam360.notify.NotifyLogger;
 import io.github.jamalam360.notify.NotifyModInit;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.util.stream.Stream;
 
@@ -36,11 +36,11 @@ public class DebugFileWriter {
     public static void write() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Number of non-ignored mods: ").append(Utils.getLoadedNonIgnoredModCount());
+        sb.append("Number of non-ignored mods: ").append(NotifyModInit.statistics.getTotalModCount());
         sb.append("\n");
-        sb.append("Number of compatible mods: ").append(Utils.getNotifySupportedModCount());
+        sb.append("Number of compatible mods: ").append(NotifyModInit.statistics.getTotalSupportedModCount());
         sb.append("\n");
-        sb.append("Percentage coverage: ").append(NotifyModInit.MOD_COVERAGE);
+        sb.append("Percentage coverage: ").append(NotifyModInit.statistics.getPercentageCoverage()).append("%");
         sb.append("\n");
         sb.append("\n");
         sb.append("Number of mods with Modrinth support: ").append(getModrinthSupportingMods());
@@ -52,11 +52,11 @@ public class DebugFileWriter {
         sb.append("Number of mods with Notify gradle.properties support: ").append(getGradlePropertiesSupportingMods());
 
         try {
-            FileWriter writer = new FileWriter(FabricLoader.getInstance().getConfigDir().resolve("notify_dump.txt").toFile(), false);
+            FileWriter writer = new FileWriter(FabricLoader.getInstance().getConfigDir().resolve("notify").resolve("notify_dump.txt").toFile(), false);
             writer.write(sb.toString());
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            NotifyLogger.warn(false, "Failed to write debug file");
         }
     }
 

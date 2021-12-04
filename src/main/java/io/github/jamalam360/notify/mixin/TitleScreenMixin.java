@@ -65,7 +65,7 @@ public abstract class TitleScreenMixin extends Screen {
             drawStringWithShadow(
                     matrices,
                     this.textRenderer,
-                    "Notify Coverage: " + NotifyModInit.MOD_COVERAGE,
+                    "Notify Coverage: " + NotifyModInit.statistics.getPercentageCoverage() + "%",
                     3,
                     3,
                     16777215 | MathHelper.ceil(this.doBackgroundFade ? MathHelper.clamp(

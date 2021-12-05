@@ -73,6 +73,7 @@ public class NotifyModInit implements ModInitializer {
             }
         });
 
+
         threading.queueLogging(MOD_UPDATE_STATUS_MAP);
 
         NotifyErrorHandler.finishedResolving();

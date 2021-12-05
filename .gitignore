@@ -29,3 +29,9 @@ version_manifest_v2.json
 
 #Tests
 *.html
+
+#minecraft
+*.log
+
+#Tests
+*.html

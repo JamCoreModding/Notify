@@ -45,6 +45,6 @@ public class NonSpecifiedGradlePropertiesTests {
     @Test
     public void testResolveLatestVersionNormal() throws Exception {
         resolver.canResolve(test1); // Needed to populate the cache
-        assertEquals("1.3.0-rc1", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
+        assertEquals("1.3.0-rc2", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
     }
 }

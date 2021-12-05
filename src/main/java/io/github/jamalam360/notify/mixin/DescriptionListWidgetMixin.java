@@ -47,7 +47,7 @@ import java.util.Locale;
  */
 
 @SuppressWarnings("rawtypes")
-@Mixin(value = DescriptionListWidget.class, remap = false)
+@Mixin(DescriptionListWidget.class)
 public abstract class DescriptionListWidgetMixin extends EntryListWidget {
     @Shadow
     @Final

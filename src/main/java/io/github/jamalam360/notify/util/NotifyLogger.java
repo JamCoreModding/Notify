@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.util;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

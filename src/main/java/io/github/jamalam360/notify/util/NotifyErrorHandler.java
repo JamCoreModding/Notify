@@ -22,31 +22,27 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.mixin;
-
-import io.github.jamalam360.notify.util.NotifyErrorHandler;
-import net.minecraft.util.SystemDetails;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.function.Supplier;
+package io.github.jamalam360.notify.util;
 
 /**
- * Needed to add Notify info to the crash report if it crashes during mod update resolution
  * @author Jamalam360
  */
-@Mixin(SystemDetails.class)
-public abstract class SystemDetailsMixin {
-    @Shadow
-    public abstract void addSection(String string, Supplier<String> supplier);
+public class NotifyErrorHandler {
+    private static String currentModId = null;
 
-    @Inject(at = @At("RETURN"), method = "<init>")
-    public void notify$addCrashingMod(CallbackInfo info) {
-        if (NotifyErrorHandler.hasError()) {
-            addSection("Notify Mod Causing Resolution Error", NotifyErrorHandler::getErrorTrace);
-        }
+    public static void setTraceString(String trace) {
+        currentModId = trace;
+    }
+
+    public static void finishedResolving() {
+        currentModId = null;
+    }
+
+    public static boolean hasError() {
+        return currentModId != null;
+    }
+
+    public static String getErrorTrace() {
+        return currentModId;
     }
 }

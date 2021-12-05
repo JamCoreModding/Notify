@@ -24,12 +24,9 @@
 
 package io.github.jamalam360.notify.resolver;
 
-import io.github.jamalam360.notify.NotifyErrorHandler;
-import io.github.jamalam360.notify.NotifyLogger;
-import io.github.jamalam360.notify.resolver.api.CurseForgeApiResolver;
-import io.github.jamalam360.notify.resolver.api.GradlePropertiesResolver;
-import io.github.jamalam360.notify.resolver.api.JsonFileResolver;
-import io.github.jamalam360.notify.resolver.api.ModrinthApiResolver;
+import io.github.jamalam360.notify.util.NotifyErrorHandler;
+import io.github.jamalam360.notify.util.NotifyLogger;
+import io.github.jamalam360.notify.resolver.api.*;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -56,6 +53,7 @@ public class NotifyVersionChecker {
         RESOLVERS.add(new GradlePropertiesResolver());
         RESOLVERS.add(new ModrinthApiResolver());
         RESOLVERS.add(new CurseForgeApiResolver());
+        RESOLVERS.add(new NonSpecifiedGradlePropertiesResolver());
 
         try {
             unsupportedVersion = Version.parse("0.0.0");
@@ -81,12 +79,8 @@ public class NotifyVersionChecker {
 
     public static Version getLatestVersion(ModContainer mod) {
         String minecraftVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
-        NotifyErrorHandler.setCurrentModId(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
+        NotifyErrorHandler.setTraceString(mod.getMetadata().getId() + " (" + mod.getMetadata().getId() + ")");
         try {
-            if (Utils.isFapi(mod) && Utils.isParentFapi(mod)) {
-                return RESOLVERS.get(2).resolveLatestVersion(mod.getMetadata(), minecraftVersion); // Use Modrinth for FAPI because it's the best to use for it
-            }
-
             for (VersionResolver resolver : RESOLVERS) {
                 if (resolver.canResolve(mod.getMetadata())) {
                     return resolver.resolveLatestVersion(mod.getMetadata(), minecraftVersion);

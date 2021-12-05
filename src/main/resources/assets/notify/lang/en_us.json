@@ -1,15 +1,29 @@
 {
-  "text.autoconfig.notify.title": "Notify Config (Requires Restart)",
+  "text.autoconfig.notify/notify_config.title": "Notify Config",
 
-  "text.autoconfig.notify.option.verboseLogging": "Verbose Logging",
-  "text.autoconfig.notify.option.verboseLogging.@Tooltip": "Enable extra logging",
+  "text.autoconfig.notify/notify_config.option.verboseLogging": "Verbose Logging",
+  "text.autoconfig.notify/notify_config.option.verboseLogging.@Tooltip": "Enable extra logging",
 
-  "text.autoconfig.notify.option.displayUpdatedBadge": "Display 'Updated' Badge",
-  "text.autoconfig.notify.option.displayUpdatedBadge.@Tooltip": "Enable the badge that tells you a mod is up-to-date",
+  "text.autoconfig.notify/notify_config.option.displayUpdatedBadge": "Display 'Updated' Badge",
+  "text.autoconfig.notify/notify_config.option.displayUpdatedBadge.@Tooltip": "Enable the badge that tells you a mod is up-to-date",
 
-  "text.autoconfig.notify.option.displayUnsupportedBadge": "Display 'Unsupported' Badge",
-  "text.autoconfig.notify.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify",
+  "text.autoconfig.notify/notify_config.option.displayUnsupportedBadge": "Display 'Unsupported' Badge",
+  "text.autoconfig.notify/notify_config.option.displayUnsupportedBadge.@Tooltip": "Enable the badge that tells you a mod doesn't support Notify",
 
-  "text.autoconfig.notify.option.renderMainMenuText": "Render 'Notify Coverage' Text",
-  "text.autoconfig.notify.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack"
+  "text.autoconfig.notify/notify_config.option.renderMainMenuText": "Render 'Notify Coverage' Text",
+  "text.autoconfig.notify/notify_config.option.renderMainMenuText.@Tooltip": "Enable the tooltip that tells you the % support of Notify in your pack",
+
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch": "Dump Info On Launch",
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch.@Tooltip[0]": "Enable dumping of debug information on launch.",
+  "text.autoconfig.notify/notify_config.option.dumpInfoOnLaunch.@Tooltip[1]": "This will significantly slow down your game launch.",
+
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties": "Enabled Non-Specified Gradle",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[0]": "Enable fetching of mod versions from gradle.properties",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[1]": "files that aren't specified in by the author. This",
+  "text.autoconfig.notify/notify_config.option.enableNonSpecifiedGradleProperties.@Tooltip[2]": "could cause false positives/negatives with some mods.",
+
+  "text.autoconfig.notify/notify_config.option.blacklist": "Mod Blacklist",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[0]": "A blacklist of mod IDs that will be ignored by Notify.",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[1]": "This means that Notify won't attempt to resolve versions",
+  "text.autoconfig.notify/notify_config.option.blacklist.@Tooltip[2]": "for the specified mods."
 }

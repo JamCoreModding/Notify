@@ -22,27 +22,29 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.test;
+
+import io.github.jamalam360.notify.resolver.api.NonSpecifiedGradlePropertiesResolver;
+import io.github.jamalam360.notify.test.metadata.SourcesModMetadata;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jamalam360
  */
-public class NotifyErrorHandler {
-    private static String currentModId = null;
+public class NonSpecifiedGradlePropertiesTests {
+    private final NonSpecifiedGradlePropertiesResolver resolver = new NonSpecifiedGradlePropertiesResolver();
 
-    public static void setCurrentModId(String modId) {
-        currentModId = modId;
-    }
+    private final ModMetadata test1 = new SourcesModMetadata("https://github.com/JamCoreModding/Notify");
 
-    public static void finishedResolving() {
-        currentModId = null;
-    }
-
-    public static boolean hasError() {
-        return currentModId != null;
-    }
-
-    public static String getErrorMod() {
-        return currentModId;
+    /**
+     * Check whether everything works under ideal conditions
+     */
+    @Test
+    public void testResolveLatestVersionNormal() throws Exception {
+        resolver.canResolve(test1); // Needed to populate the cache
+        assertEquals("1.3.0-rc1", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
     }
 }

@@ -24,22 +24,48 @@
 
 package io.github.jamalam360.notify.config;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+
+import java.util.List;
 
 /**
  * @author Jamalam360
  */
 
-@Config(name = "notify")
+@Config(name = "notify/notify_config")
 public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean verboseLogging = false;
+
     @ConfigEntry.Gui.Tooltip
     public boolean displayUpdatedBadge = true;
+
     @ConfigEntry.Gui.Tooltip
     public boolean displayUnsupportedBadge = false;
+
     @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Gui.RequiresRestart
     public boolean renderMainMenuText = true;
+
+    @ConfigEntry.Gui.RequiresRestart
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean dumpInfoOnLaunch = false;
+
+    @ConfigEntry.Gui.RequiresRestart
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    public boolean enableNonSpecifiedGradleProperties = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    public List<String> blacklist = List.of("minecraft", "fabricloader", "java", "fabric");
+
+    @Override
+    public void validatePostLoad() {
+        try {
+            NotifyModInit.statistics.update();
+        } catch (RuntimeException ignored) { // If the config hasn't finished registering yet, update() will throw an exception
+        }
+    }
 }

@@ -27,7 +27,6 @@ package io.github.jamalam360.notify.util;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import io.github.jamalam360.notify.NotifyModInit;
-import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ContactInformation;
@@ -65,32 +64,8 @@ public class Utils {
         return GSON.newJsonReader(new InputStreamReader(url.openStream()));
     }
 
-    public static boolean isParentFapi(ModContainer mod) {
-        return isFapi(mod) && mod.getMetadata().getId().equals("fabric");
-    }
-
-    public static boolean isFapi(ModContainer mod) {
-        return mod.getMetadata().getId().startsWith("fabric") && mod.getMetadata().containsCustomValue("fabric-api:module-lifecycle");
-    }
-
-    public static boolean isMinecraft(ModContainer mod) {
-        return mod.getMetadata().getId().equals("minecraft");
-    }
-
     public static boolean isIgnored(ModContainer mod) {
-        if (!mod.getMetadata().getId().equals("minecraft") && !mod.getMetadata().getId().equals("fabricloader") && !mod.getMetadata().getId().equals("java")) {
-            if (isFapi(mod)) {
-                return !isParentFapi(mod);
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    public static int getNotifySupportedModCount() {
-        return (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count();
+        return NotifyModInit.getConfig().blacklist.contains(mod.getMetadata().getId()) || mod.getMetadata().getAuthors().stream().anyMatch(p -> p.getName().equals("FabricMC")); // No FAPI :crab:
     }
 
     public static int getLoadedNonIgnoredModCount() {

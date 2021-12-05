@@ -52,32 +52,28 @@ public class NotifyModInit implements ModInitializer {
     public void onInitialize() {
         register();
 
+        NotifyThreading threading = new NotifyThreading();
         NotifyLogger.info(false, "Checking versions...");
         long startTime = System.currentTimeMillis();
 
         for (ModContainer notifyMod : FabricLoader.getInstance().getAllMods()) {
-            NotifyVersionChecker.VersionComparisonResult result = NotifyVersionChecker.checkVersion(notifyMod);
-
-            switch (result) {
-                case UPDATED -> NotifyLogger.info(
-                        true,
-                        "Mod %s is updated to the latest version",
-                        notifyMod.getMetadata().getId()
-                );
-                case OUTDATED -> NotifyLogger.info(
-                        false,
-                        "Mod %s has updates available",
-                        notifyMod.getMetadata().getId()
-                );
-                case FAILURE -> NotifyLogger.info(
-                        true,
-                        "Failed to get version of mod %s",
-                        notifyMod.getMetadata().getId()
-                );
-            }
-
-            NotifyModInit.MOD_UPDATE_STATUS_MAP.put(notifyMod.getMetadata().getId(), result);
+            threading.queue(notifyMod);
         }
+
+        while (!threading.isFinished()) {
+        }
+
+        threading.close();
+        statistics.setResolveTime((int) (System.currentTimeMillis() - startTime));
+
+        threading.allFutures().forEach((s, f) -> {
+            try {
+                NotifyModInit.MOD_UPDATE_STATUS_MAP.put(s, f.get());
+            } catch (Exception ignored) {
+            }
+        });
+
+        threading.queueLogging(MOD_UPDATE_STATUS_MAP);
 
         NotifyErrorHandler.finishedResolving();
 
@@ -86,12 +82,10 @@ public class NotifyModInit implements ModInitializer {
         FabricLoader.getInstance().getObjectShare().put("notify:notify_statuses", statusMapPlain);
 
         statistics.update();
-        statistics.setResolveTime((int) (System.currentTimeMillis() - startTime));
         dumpInfoOnNextLaunchIfEnabled();
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", Math.round(NotifyModInit.statistics.getPercentageCoverage() * 100) / 100D);
         NotifyLogger.info(false, "Notify took %d ms to resolve versions", statistics.getResolveTime());
-
     }
 
     private void register() {

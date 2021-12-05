@@ -22,27 +22,36 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.util;
+
+import io.github.jamalam360.notify.NotifyModInit;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Jamalam360
  */
-public class NotifyErrorHandler {
-    private static String currentModId = null;
+public class NotifyLogger {
+    private static final Logger LOGGER = LogManager.getLogger("Notify");
 
-    public static void setTraceString(String trace) {
-        currentModId = trace;
+    public static void info(boolean verbose, String message) {
+        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
+        LOGGER.log(Level.INFO, message);
     }
 
-    public static void finishedResolving() {
-        currentModId = null;
+    public static void info(boolean verbose, String message, Object... args) {
+        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
+        LOGGER.log(Level.INFO, message.formatted(args));
     }
 
-    public static boolean hasError() {
-        return currentModId != null;
+    public static void warn(boolean verbose, String message) {
+        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
+        LOGGER.log(Level.WARN, message);
     }
 
-    public static String getErrorTrace() {
-        return currentModId;
+    public static void warn(boolean verbose, String message, Object... args) {
+        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
+        LOGGER.log(Level.WARN, message.formatted(args));
     }
 }

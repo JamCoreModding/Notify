@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.util;
 
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
+import io.github.jamalam360.notify.util.NotifyLogger;
 import net.fabricmc.loader.api.ModContainer;
 import org.jetbrains.annotations.NotNull;
 

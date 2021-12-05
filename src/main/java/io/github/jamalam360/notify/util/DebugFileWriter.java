@@ -24,7 +24,6 @@
 
 package io.github.jamalam360.notify.util;
 
-import io.github.jamalam360.notify.NotifyLogger;
 import io.github.jamalam360.notify.NotifyModInit;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;

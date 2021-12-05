@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.util;
 
+import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import io.github.jamalam360.notify.util.Utils;
 

@@ -24,8 +24,8 @@
 
 package io.github.jamalam360.notify.resolver;
 
-import io.github.jamalam360.notify.NotifyErrorHandler;
-import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.util.NotifyErrorHandler;
+import io.github.jamalam360.notify.util.NotifyLogger;
 import io.github.jamalam360.notify.resolver.api.*;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.FabricLoader;

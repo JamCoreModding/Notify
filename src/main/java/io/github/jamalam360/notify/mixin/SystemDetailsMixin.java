@@ -24,7 +24,7 @@
 
 package io.github.jamalam360.notify.mixin;
 
-import io.github.jamalam360.notify.NotifyErrorHandler;
+import io.github.jamalam360.notify.util.NotifyErrorHandler;
 import net.minecraft.util.SystemDetails;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

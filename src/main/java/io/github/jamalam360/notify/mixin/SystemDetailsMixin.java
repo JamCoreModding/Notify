@@ -24,38 +24,29 @@
 
 package io.github.jamalam360.notify.mixin;
 
-import com.terraformersmc.modmenu.util.mod.Mod;
-import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
-import io.github.jamalam360.notify.NotifyModInit;
-import io.github.jamalam360.notify.util.Utils;
-import net.fabricmc.loader.api.ModContainer;
-import org.spongepowered.asm.mixin.Final;
+import io.github.jamalam360.notify.util.NotifyErrorHandler;
+import net.minecraft.util.SystemDetails;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Set;
+import java.util.function.Supplier;
 
 /**
- * Adds badges to every FabricMod in Mod Menu, excluding ignored mods
+ * Needed to add Notify info to the crash report if it crashes during mod update resolution
  * @author Jamalam360
  */
-
-@Mixin(value = FabricMod.class, remap = false)
-public abstract class FabricModMixin {
+@Mixin(SystemDetails.class)
+public abstract class SystemDetailsMixin {
     @Shadow
-    @Final
-    private Set<Mod.Badge> badges;
+    public abstract void addSection(String string, Supplier<String> supplier);
 
-    @Inject(
-            method = "<init>",
-            at = @At("TAIL")
-    )
-    public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
-        if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !Utils.isIgnored(container)) {
-            this.badges.add(NotifyModInit.UPDATE_BADGE);
+    @Inject(at = @At("RETURN"), method = "<init>")
+    public void notify$addCrashingMod(CallbackInfo info) {
+        if (NotifyErrorHandler.hasError()) {
+            addSection("Notify Mod Causing Resolution Error", NotifyErrorHandler::getErrorTrace);
         }
     }
 }

@@ -22,28 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.resolver.api;
+package io.github.jamalam360.notify.test;
 
-import io.github.jamalam360.notify.NotifyModInit;
-import io.github.jamalam360.notify.resolver.VersionResolver;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-
-import java.io.IOException;
-
-/**
- * @author Jamalam360
- */
-public class CurseForgeApiResolver implements VersionResolver {
-    @Override
-    public boolean canResolve(ModMetadata metadata) {
-        return false;
-    }
-
-    @Override
-    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
-        NotifyModInit.statistics.curseForgeMod();
-        return null;
-    }
+public class CurseForgeApiTests {
 }

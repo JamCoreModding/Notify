@@ -24,67 +24,80 @@
 
 package io.github.jamalam360.notify.resolver.api;
 
-import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import io.github.jamalam360.notify.NotifyLogger;
+import io.github.jamalam360.notify.util.NotifyLogger;
+import io.github.jamalam360.notify.NotifyModInit;
+import io.github.jamalam360.notify.resolver.VersionResolver;
+import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 /**
  * @author Jamalam360
  */
-public class JsonFileResolver {
-    private static final Gson GSON = new Gson();
+public class JsonFileResolver implements VersionResolver {
+    @Override
+    public boolean canResolve(ModMetadata metadata) {
+        return metadata.containsCustomValue("notify_json");
+    }
 
-    public static Version resolve(String url, String modId, Version minecraftVersion) throws IOException, VersionParsingException {
-        JsonReader reader;
+    @Override
+    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
+        JsonReader reader = Utils.openJsonFromUrl(metadata.getCustomValue("notify_json").getAsString());
+        Version minecraftVersionParsed = Version.parse(minecraftVersion);
 
-        URL versionsUrl = new URL(url);
-        reader = GSON.newJsonReader(new InputStreamReader(versionsUrl.openStream()));
-
-        reader.beginObject();
         boolean notFound = true;
         Version finalResult = null;
 
+        reader.beginObject();
+
         while (reader.hasNext() && notFound) {
-            if (reader.nextName().equals(modId)) {
-                reader.beginObject();
+            if (reader.peek() == JsonToken.NAME) {
+                String objectName = reader.nextName();
+                if (objectName.equals(metadata.getId())) {
+                    if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                        reader.beginObject();
 
-                Version wildcardVersion = null;
-                Version specificVersion = null;
+                        Version wildcardVersion = null;
+                        Version specificVersion = null;
 
-                while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
-                    String name = reader.nextName();
-                    String str = reader.nextString();
+                        while (reader.hasNext() && reader.peek() != JsonToken.END_OBJECT) {
+                            String name = reader.nextName();
+                            String str = reader.nextString();
 
-                    if (name.equals("*")) {
-                        wildcardVersion = Version.parse(str);
-                    } else {
-                        Version vers = Version.parse(name);
-                        if (VersionComparisonOperator.SAME_TO_NEXT_MAJOR.test(vers, minecraftVersion)) {
-                            specificVersion = Version.parse(str);
+                            if (name.equals("*")) {
+                                wildcardVersion = Version.parse(str);
+                            } else {
+                                Version vers = Version.parse(name);
+                                if (VersionComparisonOperator.SAME_TO_NEXT_MINOR.test(vers, minecraftVersionParsed)) {
+                                    specificVersion = Version.parse(str);
+                                }
+                            }
                         }
-                    }
-                }
 
-                finalResult = specificVersion == null ? wildcardVersion : specificVersion;
-                notFound = false;
+                        finalResult = specificVersion == null ? wildcardVersion : specificVersion;
+                        notFound = false;
+                    }
+                } else {
+                    reader.skipValue();
+                }
             }
         }
 
         reader.close();
 
+        NotifyModInit.statistics.jsonMod();
+
         if (notFound || finalResult == null) {
-            NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", modId);
-            return null;
+            NotifyLogger.warn(false, "Mod %s provided a Notify JSON URL, but that ID does not exist in the JSON file", metadata.getId());
+            return Version.parse("0.0.0");
         } else {
             return finalResult;
         }
-}
+    }
 }

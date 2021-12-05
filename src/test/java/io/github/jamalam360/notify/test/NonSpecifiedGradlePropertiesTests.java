@@ -22,28 +22,29 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.resolver.api;
+package io.github.jamalam360.notify.test;
 
-import io.github.jamalam360.notify.NotifyModInit;
-import io.github.jamalam360.notify.resolver.VersionResolver;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
+import io.github.jamalam360.notify.resolver.api.NonSpecifiedGradlePropertiesResolver;
+import io.github.jamalam360.notify.test.metadata.SourcesModMetadata;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jamalam360
  */
-public class CurseForgeApiResolver implements VersionResolver {
-    @Override
-    public boolean canResolve(ModMetadata metadata) {
-        return false;
-    }
+public class NonSpecifiedGradlePropertiesTests {
+    private final NonSpecifiedGradlePropertiesResolver resolver = new NonSpecifiedGradlePropertiesResolver();
 
-    @Override
-    public Version resolveLatestVersion(ModMetadata metadata, String minecraftVersion) throws VersionParsingException, IOException {
-        NotifyModInit.statistics.curseForgeMod();
-        return null;
+    private final ModMetadata test1 = new SourcesModMetadata("https://github.com/JamCoreModding/Notify");
+
+    /**
+     * Check whether everything works under ideal conditions
+     */
+    @Test
+    public void testResolveLatestVersionNormal() throws Exception {
+        resolver.canResolve(test1); // Needed to populate the cache
+        assertEquals("1.2.0-rc1", resolver.resolveLatestVersion(test1, "1.16.5").getFriendlyString()); // Ideal conditions
     }
 }

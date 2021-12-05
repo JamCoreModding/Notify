@@ -22,35 +22,38 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify;
+package io.github.jamalam360.notify.test.metadata;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.fabricmc.loader.api.metadata.CustomValue;
 
-/**
- * @author Jamalam360
- */
-public class NotifyLogger {
-    private static final Logger LOGGER = LogManager.getLogger("Notify");
-
-    public static void info(boolean verbose, String message) {
-        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
-        LOGGER.log(Level.INFO, message);
+public record SimpleCustomValue(String value) implements CustomValue {
+    @Override
+    public String getAsString() {
+        return value();
     }
 
-    public static void info(boolean verbose, String message, Object... args) {
-        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
-        LOGGER.log(Level.INFO, message.formatted(args));
+    @Override
+    public CvType getType() {
+        return CvType.STRING;
     }
 
-    public static void warn(boolean verbose, String message) {
-        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
-        LOGGER.log(Level.WARN, message);
+    @Override
+    public CvObject getAsObject() {
+        return null;
     }
 
-    public static void warn(boolean verbose, String message, Object... args) {
-        if (verbose && !NotifyModInit.getConfig().verboseLogging) return;
-        LOGGER.log(Level.WARN, message.formatted(args));
+    @Override
+    public CvArray getAsArray() {
+        return null;
+    }
+
+    @Override
+    public Number getAsNumber() {
+        return null;
+    }
+
+    @Override
+    public boolean getAsBoolean() {
+        return false;
     }
 }

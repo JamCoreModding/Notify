@@ -3,8 +3,11 @@
   "package": "io.github.jamalam360.notify.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "DescriptionListWidgetMixin",
     "FabricModMixin",
-    "ModBadgeRendererMixin"
+    "ModBadgeRendererMixin",
+    "SystemDetailsMixin",
+    "TitleScreenMixin"
   ],
   "client": [],
   "server": [],

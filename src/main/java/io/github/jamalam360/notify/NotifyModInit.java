@@ -29,6 +29,7 @@ import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import io.github.jamalam360.notify.util.DebugFileWriter;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -68,7 +69,7 @@ public class NotifyModInit implements ModInitializer {
 
         threading.allFutures().forEach((s, f) -> {
             try {
-                NotifyModInit.MOD_UPDATE_STATUS_MAP.put(s, f.get());
+                MOD_UPDATE_STATUS_MAP.put(s, f.get());
             } catch (Exception ignored) {
             }
         });

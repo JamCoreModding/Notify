@@ -44,7 +44,7 @@ public class NotifyStatistics {
 
     public void update() {
         this.totalModCount = Utils.getLoadedNonIgnoredModCount();
-        this.totalSupportedModCount = (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED).count();
+        this.totalSupportedModCount = (int) NotifyModInit.MOD_UPDATE_STATUS_MAP.entrySet().stream().filter(e -> e.getValue() != NotifyVersionChecker.VersionComparisonResult.UNSUPPORTED && e.getValue() != NotifyVersionChecker.VersionComparisonResult.IGNORED).count();
         this.percentageCoverage = ((double) this.totalSupportedModCount / (double) this.totalModCount) * 100D;
     }
 

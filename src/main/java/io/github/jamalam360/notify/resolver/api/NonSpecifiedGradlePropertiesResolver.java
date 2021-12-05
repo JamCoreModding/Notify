@@ -27,6 +27,7 @@ package io.github.jamalam360.notify.resolver.api;
 import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.VersionResolver;
 import io.github.jamalam360.notify.util.Utils;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -46,7 +47,12 @@ import java.util.regex.Pattern;
 public class NonSpecifiedGradlePropertiesResolver implements VersionResolver {
     private static final String REGEX_BASE = "^\\s*{property_name}\\s*=\\s*([a-zA-Z0-9.+-]*)";
     private static final String[] COMMON_KEYS = {"mod_version", "version", "modVersion"};
-    private static final String[] COMMON_BRANCHES = {"main", "master"};
+    private static final String[] COMMON_BRANCHES = {
+            FabricLoader.getInstance().getModContainer("minecraft").isEmpty() ?
+                    "test-environment-this-branch-wont-exist-stupid-branch-name" : FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString(),
+            "main",
+            "master"
+    };
 
     private final Map<String, Version> versionModIdCache = new HashMap<>();
 

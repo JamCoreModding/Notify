@@ -45,6 +45,7 @@ public class NotifyThreading {
      */
     private final ThreadPoolExecutor loggingExecutor;
     private final Map<String, Future<NotifyVersionChecker.VersionComparisonResult>> futures = new HashMap<>();
+    private int count = 0;
 
     public NotifyThreading() {
         this.executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.SECONDS, new SynchronousQueue<>(), new NotifyThreadFactory("Version Resolver"));
@@ -83,6 +84,7 @@ public class NotifyThreading {
     }
 
     public Future<NotifyVersionChecker.VersionComparisonResult> queue(ModContainer m) {
+        count++;
         this.futures.put(m.getMetadata().getId(), this.executor.submit(() -> NotifyVersionChecker.checkVersion(m)));
         return this.futures.get(m.getMetadata().getId());
     }
@@ -92,7 +94,7 @@ public class NotifyThreading {
     }
 
     public boolean isFinished() {
-        return this.executor.getQueue().size() == 0;
+        return this.executor.getCompletedTaskCount() == count;
     }
 
     public void close() {

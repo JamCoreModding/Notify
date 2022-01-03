@@ -22,10 +22,11 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.mixin;
+package io.github.jamalam360.notify.mixin.modmenu;
 
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
+import io.github.jamalam360.notify.NotifyClientModInit;
 import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.ModContainer;
@@ -55,7 +56,7 @@ public abstract class FabricModMixin {
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
         if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !Utils.isIgnored(container)) {
-            this.badges.add(NotifyModInit.UPDATE_BADGE);
+            this.badges.add(NotifyClientModInit.UPDATE_BADGE);
         }
     }
 }

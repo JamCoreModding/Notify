@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.mixin;
+package io.github.jamalam360.notify.mixin.modmenu;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
 import com.terraformersmc.modmenu.gui.widget.DescriptionListWidget;

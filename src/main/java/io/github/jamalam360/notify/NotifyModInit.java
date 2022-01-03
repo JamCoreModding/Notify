@@ -24,8 +24,6 @@
 
 package io.github.jamalam360.notify;
 
-import com.terraformersmc.modmenu.util.mod.Mod;
-import io.github.alkyaly.enumextender.EnumExtender;
 import io.github.jamalam360.notify.config.ModConfig;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import io.github.jamalam360.notify.util.*;
@@ -34,14 +32,12 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.text.LiteralText;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NotifyModInit implements ModInitializer {
     public static final Map<String, NotifyVersionChecker.VersionComparisonResult> MOD_UPDATE_STATUS_MAP = new HashMap<>();
-    public static Mod.Badge UPDATE_BADGE;
     public static NotifyStatistics statistics = new NotifyStatistics();
 
     public static ModConfig getConfig() {
@@ -50,7 +46,7 @@ public class NotifyModInit implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        register();
+        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
 
         NotifyThreading threading = new NotifyThreading();
         NotifyLogger.info(false, "Checking versions...");
@@ -87,17 +83,6 @@ public class NotifyModInit implements ModInitializer {
 
         NotifyLogger.info(false, "Notify has %s percent coverage of mods", Math.round(NotifyModInit.statistics.getPercentageCoverage() * 100) / 100D);
         NotifyLogger.info(false, "Notify took %d ms to resolve versions", statistics.getResolveTime());
-    }
-
-    private void register() {
-        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
-
-        UPDATE_BADGE = EnumExtender.addToEnum(Mod.Badge.class, null, "NOTIFY_UPDATE", Map.of(
-                "text", new LiteralText("Update Status"),
-                "outlineColor", 0xFF0000,
-                "fillColor", 0xFF0000,
-                "key", "null"
-        ));
     }
 
     private void dumpInfoOnNextLaunchIfEnabled() {

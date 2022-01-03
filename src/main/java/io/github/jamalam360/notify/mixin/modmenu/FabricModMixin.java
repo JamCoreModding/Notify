@@ -22,10 +22,11 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.notify.mixin;
+package io.github.jamalam360.notify.mixin.modmenu;
 
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
+import io.github.jamalam360.notify.ModMenuEnumExtender;
 import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.util.Utils;
 import net.fabricmc.loader.api.ModContainer;
@@ -40,6 +41,7 @@ import java.util.Set;
 
 /**
  * Adds badges to every FabricMod in Mod Menu, excluding ignored mods
+ *
  * @author Jamalam360
  */
 
@@ -54,8 +56,12 @@ public abstract class FabricModMixin {
             at = @At("TAIL")
     )
     public void notify$appendNotifyBadge(ModContainer container, CallbackInfo ci) {
+        if (ModMenuEnumExtender.UPDATE_BADGE == null) {
+            ModMenuEnumExtender.extend();
+        }
+
         if (NotifyModInit.MOD_UPDATE_STATUS_MAP.containsKey(container.getMetadata().getId()) && !Utils.isIgnored(container)) {
-            this.badges.add(NotifyModInit.UPDATE_BADGE);
+            this.badges.add(ModMenuEnumExtender.UPDATE_BADGE);
         }
     }
 }

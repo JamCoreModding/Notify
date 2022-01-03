@@ -2,12 +2,13 @@
   "required": true,
   "package": "io.github.jamalam360.notify.mixin",
   "compatibilityLevel": "JAVA_16",
+  "plugin": "io.github.jamalam360.notify.mixin.modmenu.NotifyMixinPlugin",
   "mixins": [
-    "DescriptionListWidgetMixin",
-    "FabricModMixin",
-    "ModBadgeRendererMixin",
     "SystemDetailsMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "modmenu.DescriptionListWidgetMixin",
+    "modmenu.FabricModMixin",
+    "modmenu.ModBadgeRendererMixin"
   ],
   "client": [],
   "server": [],

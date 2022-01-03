@@ -20,6 +20,9 @@
     "main": [
       "io.github.jamalam360.notify.NotifyModInit"
     ],
+    "client": [
+      "io.github.jamalam360.notify.NotifyClientModInit"
+    ],
     "modmenu": [
       "io.github.jamalam360.notify.config.NotifyModMenu"
     ]
@@ -29,7 +32,9 @@
   ],
   "depends": {
     "fabricloader": ">=0.12.5",
-    "cloth-config2": "*",
+    "cloth-config2": "*"
+  },
+  "suggests": {
     "modmenu": "*"
   },
   "custom": {

@@ -89,7 +89,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public Text notify$dev$getTextRedirect(Mod.Badge instance) {
-        Text returnValue;
+        Text returnValue = new LiteralText("");
 
         if (instance == NotifyClientModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
@@ -100,7 +100,7 @@ public abstract class ModBadgeRendererMixin {
                 case UNSUPPORTED -> returnValue = new LiteralText("Unsupported");
                 default -> returnValue = new LiteralText("Failed to Fetch Version");
             }
-        } else {
+        } else if (instance != null) {
             returnValue = instance.getText();
         }
 
@@ -132,8 +132,10 @@ public abstract class ModBadgeRendererMixin {
                     return 0xff841426;
                 }
             }
-        } else {
+        } else if (instance != null) {
             return instance.getOutlineColor();
+        } else {
+            return 0;
         }
     }
 
@@ -162,8 +164,10 @@ public abstract class ModBadgeRendererMixin {
                     return 0xff530C17;
                 }
             }
-        } else {
+        } else if (instance != null) {
             return instance.getFillColor();
+        } else {
+            return 0;
         }
     }
     //endregion
@@ -202,7 +206,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public Text notify$production$getTextRedirect(Mod.Badge instance) {
-        Text returnValue;
+        Text returnValue = new LiteralText("");
 
         if (instance == NotifyClientModInit.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
@@ -213,7 +217,7 @@ public abstract class ModBadgeRendererMixin {
                 case UNSUPPORTED -> returnValue = new LiteralText("Unsupported");
                 default -> returnValue = new LiteralText("Failed to Fetch Version");
             }
-        } else {
+        } else if (instance != null) {
             returnValue = instance.getText();
         }
 
@@ -245,8 +249,10 @@ public abstract class ModBadgeRendererMixin {
                     return 0xff841426;
                 }
             }
-        } else {
+        } else if (instance != null) {
             return instance.getOutlineColor();
+        } else {
+            return 0;
         }
     }
 
@@ -274,8 +280,10 @@ public abstract class ModBadgeRendererMixin {
                     return 0xff530C17;
                 }
             }
-        } else {
+        }  else if (instance != null) {
             return instance.getFillColor();
+        } else {
+            return 0;
         }
     }
     //endregion

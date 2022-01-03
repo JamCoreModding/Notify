@@ -24,17 +24,24 @@
 
 package io.github.jamalam360.notify;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
+import com.terraformersmc.modmenu.util.mod.Mod;
+import io.github.alkyaly.enumextender.EnumExtender;
+import net.minecraft.text.LiteralText;
+
+import java.util.Map;
 
 /**
  * @author Jamalam360
  */
-public class NotifyClientModInit implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        /*if (FabricLoader.getInstance().isModLoaded("modmenu")) {
-            ModMenuEnumExtender.extend();
-        }*/
+public class ModMenuEnumExtender {
+    public static Mod.Badge UPDATE_BADGE;
+
+    public static void extend() {
+        UPDATE_BADGE = EnumExtender.addToEnum(Mod.Badge.class, null, "NOTIFY_UPDATE", Map.of(
+                "text", new LiteralText("Update Status"),
+                "outlineColor", 0xFF0000,
+                "fillColor", 0xFF0000,
+                "key", "null"
+        ));
     }
 }

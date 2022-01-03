@@ -84,7 +84,7 @@ public abstract class DescriptionListWidgetMixin extends EntryListWidget {
             children().add(c.newInstance(this, LiteralText.EMPTY.asOrderedText(), this));
             children().add(c.newInstance(this, new LiteralText("Notify Status:").asOrderedText(), this));
             children().add(c.newInstance(this, new LiteralText(s).asOrderedText(), this));
-        } catch (Exception ignored) { // This will probably never happen, so we can just ignore it anyways.
+        } catch (Exception ignored) { // This will probably never happen, so we can just ignore it anyway.
         }
     }
 }

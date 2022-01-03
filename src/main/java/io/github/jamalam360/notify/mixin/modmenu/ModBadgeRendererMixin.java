@@ -26,7 +26,7 @@ package io.github.jamalam360.notify.mixin.modmenu;
 
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.ModBadgeRenderer;
-import io.github.jamalam360.notify.NotifyClientModInit;
+import io.github.jamalam360.notify.ModMenuEnumExtender;
 import io.github.jamalam360.notify.NotifyModInit;
 import io.github.jamalam360.notify.resolver.NotifyVersionChecker;
 import net.minecraft.client.util.math.MatrixStack;
@@ -43,6 +43,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
  * Needed to dynamically change the color and text of badges in Mod Menu, depending on the update status
+ *
  * @author Jamalam360
  */
 
@@ -91,7 +92,7 @@ public abstract class ModBadgeRendererMixin {
     public Text notify$dev$getTextRedirect(Mod.Badge instance) {
         Text returnValue = new LiteralText("");
 
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -118,7 +119,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public int notify$dev$getOutlineColorRedirect(Mod.Badge instance) {
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -150,7 +151,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public int notify$dev$getFillColorRedirect(Mod.Badge instance) {
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -208,7 +209,7 @@ public abstract class ModBadgeRendererMixin {
     public Text notify$production$getTextRedirect(Mod.Badge instance) {
         Text returnValue = new LiteralText("");
 
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -235,7 +236,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public int notify$production$getOutlineColorRedirect(Mod.Badge instance) {
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -266,7 +267,7 @@ public abstract class ModBadgeRendererMixin {
             )
     )
     public int notify$production$getFillColorRedirect(Mod.Badge instance) {
-        if (instance == NotifyClientModInit.UPDATE_BADGE) {
+        if (instance == ModMenuEnumExtender.UPDATE_BADGE) {
             NotifyVersionChecker.VersionComparisonResult version = NotifyModInit.MOD_UPDATE_STATUS_MAP.get(this.mod.getId());
 
             switch (version) {
@@ -280,7 +281,7 @@ public abstract class ModBadgeRendererMixin {
                     return 0xff530C17;
                 }
             }
-        }  else if (instance != null) {
+        } else if (instance != null) {
             return instance.getFillColor();
         } else {
             return 0;

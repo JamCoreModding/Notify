@@ -1,3 +1,13 @@
+Notify is **not currently in active maintenance**. It will be revived in the summer, but with a different goal; Notify **will not aim to support all mods**. Implicit Gradle property and JSON resolving will be removed, and the only resolving methods will be:
+
+- Modrinth
+- Curseforge
+- Explicitly defined Gradle properties
+
+This is to improve speed, and reduce bloat.
+
+---
+
 Unobtrusively notify users when mod updates are available
 
 Notify aims to not spam you telling you updates are available, rather it optionally logs mod's status to the console,

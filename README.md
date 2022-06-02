@@ -22,13 +22,13 @@ the `verboseLogging` option to `true`.
 There are multiple ways you can support Notify. If you want to 'set and forget', I recommend using
 the `gradle.properties` or Modrinth/CurseForge API options.
 
-## Using a JSON File:
+## Using a JSON File (NO LONGER RECOMMENDED, BUT SUPPORTED):
 
 Inside your `fabric.mod.json`, add a new key under the `custom` field:
 
   ```json
-  "custom": {
-"notify_version_url": "https://raw.githubusercontent.com/JamCoreModding/Meta/main/data/mod_versions.json"
+"custom": {
+    "notify_version_url": "https://raw.githubusercontent.com/JamCoreModding/Meta/main/data/mod_versions.json"
 }
   ```
 

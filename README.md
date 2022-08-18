@@ -1,12 +1,4 @@
-Notify is **not currently in active maintenance**. It will be revived in the summer, but with a different goal; Notify **will not aim to support all mods**. Implicit Gradle property and JSON resolving will be removed, and the only resolving methods will be:
-
-- Modrinth
-- Curseforge
-- Explicitly defined Gradle properties
-
-This is to improve speed, and reduce bloat.
-
----
+**DEPRECATION NOTICE: This mod is no longer actively maintained and will not receive any form of updates. If you are interested in taking ownership of this mod, please contact me on [my Discord server](https://discord.jamalam.tech).**
 
 Unobtrusively notify users when mod updates are available
 
